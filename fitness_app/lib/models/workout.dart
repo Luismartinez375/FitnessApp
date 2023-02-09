@@ -5,19 +5,14 @@ class Workout {
   double weight;
   bool status = false;
   bool unit = true;
-  String description;
 
-  Workout(this.name, this.sets, this.reps, this.weight, this.description);
+  Workout(this.name, this.sets, this.reps, this.weight);
 
   void changeUnit(bool change) {
     unit = change;
     if (unit == false) {
       weight = weight * 0.454;
     }
-  }
-
-  String getDescription() {
-    return description;
   }
 
   bool getUnit() {
