@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_textfield.dart';
+import 'registerScreen.dart';
 
 class LogIn extends StatefulWidget {
   static String routName = '/login-email-password';
@@ -22,12 +23,11 @@ class _LogInState extends State<LogIn> {
         padding: const EdgeInsets.only(
           left: 16.0,
           right: 16.0,
-          bottom: 20.0,
+          bottom: 10.0,
         ),
         child: Column(mainAxisSize: MainAxisSize.max, children: [
           Row(),
-          Expanded(
-              child: Column(
+          Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -38,7 +38,7 @@ class _LogInState extends State<LogIn> {
                     height: 300,
                   ))
             ],
-          )),
+          ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.08),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -72,6 +72,21 @@ class _LogInState extends State<LogIn> {
             child: const Text(
               'Login',
               style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: InkWell(
+              child: const Text('Dont have an account? Register here!',
+                  style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Colors.blue)),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const EmailPasswordSignup()));
+              },
             ),
           )
         ]),
