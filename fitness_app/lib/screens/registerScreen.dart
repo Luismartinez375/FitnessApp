@@ -1,6 +1,9 @@
+import 'package:fitness_app/auth/firebaseAuthMethods.dart';
 import 'package:flutter/material.dart';
 import '../widgets/custom_textfield.dart';
 import 'homeScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 class EmailPasswordSignup extends StatefulWidget {
   static String routeName = '/signup-email-password';
@@ -14,13 +17,13 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // void signUpUser() async {
-  //   context.read<FirebaseAuthMethods>().signUpWithEmail(
-  //         email: emailController.text,
-  //         password: passwordController.text,
-  //         context: context,
-  //       );
-  // }
+  void signUpUser() async {
+    context.read<FirebaseAuthMethods>().signUpWithEmail(
+          email: emailController.text,
+          password: passwordController.text,
+          context: context,
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +55,7 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
           ElevatedButton(
             //onPressed will user signUpUser function that will later be implemented
             onPressed: () {
+              signUpUser;
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const HomePage()));
             },
