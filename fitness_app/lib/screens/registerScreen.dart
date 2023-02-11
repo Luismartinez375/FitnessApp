@@ -18,11 +18,11 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
   final TextEditingController passwordController = TextEditingController();
 
   void signUpUser() async {
-    context.read<FirebaseAuthMethods>().signUpWithEmail(
-          email: emailController.text,
-          password: passwordController.text,
-          context: context,
-        );
+    FirebaseAuthMethods(FirebaseAuth.instance).signUpWithEmail(
+      email: emailController.text,
+      password: passwordController.text,
+      context: context,
+    );
   }
 
   @override
@@ -55,9 +55,9 @@ class _EmailPasswordSignupState extends State<EmailPasswordSignup> {
           ElevatedButton(
             //onPressed will user signUpUser function that will later be implemented
             onPressed: () {
-              signUpUser;
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const HomePage()));
+              signUpUser();
+              // Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => const HomePage()));
             },
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.red),
