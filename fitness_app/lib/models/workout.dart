@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Workout {
   String name;
   int sets;
@@ -55,3 +57,8 @@ class Workout {
     weight = amnt;
   }
 }
+
+// class Days {
+//   String day;
+//   Days(this.day);
+// }

@@ -2,14 +2,23 @@ import 'package:fitness_app/models/workout.dart';
 import 'package:flutter/material.dart';
 import '../models/workoutPlan.dart';
 import 'package:fitness_app/widgets/listItem.dart';
+import 'package:fitness_app/widgets/workoutcard.dart';
 
 var workoutList = [
-  Workout("Barbell Squat", 3, 10, 225),
+  Workout("Barbell Squat\n", 3, 10, 225),
   Workout("Leg Extension", 3, 12, 140),
-  Workout("RDL (Romanian Deadlift)", 3, 8, 135),
+  Workout("RDL", 3, 8, 135),
   Workout("Hack Squat", 3, 10, 215),
 ];
-
+var daysList = [
+  "Monday",
+  "Tuesday",
+  "Wedensday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday"
+];
 var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
 
 class HomePage extends StatefulWidget {
@@ -20,6 +29,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  get description => null;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,9 +45,20 @@ class _HomePageState extends State<HomePage> {
               trailing: Text("exercise"),
             ),
           ),
-          Expanded(child: ListView.builder(itemBuilder: (_, index) {
-            return listItem(workoutPlan, index);
-          }))
+
+          Expanded(
+              child: ListView.builder(
+                  itemCount: workoutList.length,
+                  itemBuilder: (_, index) {
+                    return listItem(workoutPlan, index);
+                  })),
+          // Expanded(child: ListView.builder(itemBuilder: (_, index){
+          //   return WorkoutCard(exerciseName: exerciseName, muscleGroup: muscleGroup, description: description);
+          // }))
+          FloatingActionButton(
+            onPressed: () {},
+            child: const Icon(Icons.add),
+          ),
         ],
       ),
     );
