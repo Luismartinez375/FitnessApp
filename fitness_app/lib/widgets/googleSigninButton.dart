@@ -25,8 +25,8 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
         ),
         onPressed: () {
           FirebaseAuthMethods(FirebaseAuth.instance).signInWithGoogle(context);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => HomePage()));
         },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
