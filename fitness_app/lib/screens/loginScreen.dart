@@ -46,12 +46,14 @@ class _LogInState extends State<LogIn> {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      SizedBox(
+                        height: 20,
+                      ),
                       Flexible(
                           flex: 1,
-                          child: Image.asset(
-                            'assets/gymrat.png',
-                            height: 300,
-                            fit: BoxFit.cover,
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage('assets/gymrat.png'),
+                            radius: 150.0,
                           ))
                     ],
                   ),
