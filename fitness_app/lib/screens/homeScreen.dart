@@ -5,7 +5,7 @@ import 'package:fitness_app/widgets/listItem.dart';
 import 'package:fitness_app/widgets/workoutcard.dart';
 
 var workoutList = [
-  Workout("Barbell Squat\n", 3, 10, 225),
+  Workout("Barbell Squat", 3, 10, 225),
   Workout("Leg Extension", 3, 12, 140),
   Workout("RDL", 3, 8, 135),
   Workout("Hack Squat", 3, 10, 215),
@@ -34,33 +34,35 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            color: Colors.red,
-            child: const ListTile(
-              leading: Text("day"),
-              title: Text("type"),
-              trailing: Text("exercise"),
-            ),
-          ),
+        body: Column(
+      children: [
+        AppBar(
+          title: Text("Day           Day Type       Workout"),
+        ),
 
-          Expanded(
-              child: ListView.builder(
-                  itemCount: workoutList.length,
-                  itemBuilder: (_, index) {
-                    return listItem(workoutPlan, index);
-                  })),
-          // Expanded(child: ListView.builder(itemBuilder: (_, index){
-          //   return WorkoutCard(exerciseName: exerciseName, muscleGroup: muscleGroup, description: description);
-          // }))
-          FloatingActionButton(
-            onPressed: () {},
-            child: const Icon(Icons.add),
-          ),
-        ],
-      ),
-    );
+        Expanded(
+            child: ListView.builder(
+                itemCount: workoutList.length,
+                itemBuilder: (_, index) {
+                  return listItem(workoutPlan, index);
+                })),
+        // Expanded(child: ListView.builder(itemBuilder: (_, index){
+        //   return WorkoutCard(exerciseName: exerciseName, muscleGroup: muscleGroup, description: description);
+        // }))
+        Row(
+          children: [
+            Expanded(
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: const Icon(Icons.add),
+                ),
+              ),
+            ),
+          ],
+        )
+      ],
+    ));
   }
 }
