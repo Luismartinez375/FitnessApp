@@ -21,6 +21,8 @@ var daysList = [
 ];
 var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
 
+bool ispressed = true;
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -31,6 +33,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   get description => null;
 
+  List<WorkoutCards> dynamicList = [];
+  newCard() {
+    dynamicList = [];
+    setState() {
+      dynamicList.add(new WorkoutCards());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,12 +50,8 @@ class _HomePageState extends State<HomePage> {
           title: Text("Day           Day Type       Workout"),
         ),
 
-        Expanded(
-            child: ListView.builder(
-                itemCount: workoutList.length,
-                itemBuilder: (_, index) {
-                  return listItem(workoutPlan, index);
-                })),
+        WorkoutCards(),
+        WorkoutCards(),
         // Expanded(child: ListView.builder(itemBuilder: (_, index){
         //   return WorkoutCard(exerciseName: exerciseName, muscleGroup: muscleGroup, description: description);
         // }))
@@ -54,9 +60,9 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               child: Align(
                 alignment: Alignment.bottomRight,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: const Icon(Icons.add),
+                child: new ElevatedButton(
+                  onPressed: newCard(),
+                  child: new Icon(Icons.add),
                 ),
               ),
             ),
