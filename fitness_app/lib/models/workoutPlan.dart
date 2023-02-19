@@ -2,16 +2,16 @@ import 'workout.dart';
 
 class WorkoutPlan {
   String day;
-  String type;
+  String split;
   List<Workout> workouts;
 
-  WorkoutPlan(this.day, this.type, this.workouts);
+  WorkoutPlan(this.day, this.split, this.workouts);
   String getDay() {
     return day;
   }
 
   String getType() {
-    return type;
+    return split;
   }
 
   List getPlan() {

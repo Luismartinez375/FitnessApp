@@ -10,7 +10,7 @@ Widget listItem(WorkoutPlan plan, int index) {
     child: ListTile(
       leading: Text(plan.day.toString(), style: const TextStyle(fontSize: 18)),
       title: Text(
-        plan.type.toString(),
+        plan.split.toString(),
         style: const TextStyle(fontSize: 18),
       ),
       trailing: Text(workouts[index].name.toString(),

@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import '../auth/firebaseAuthMethods.dart';
 import 'package:fitness_app/models/workout.dart';
 import 'package:flutter/material.dart';
 import '../models/workoutPlan.dart';
@@ -9,6 +11,8 @@ var workoutList = [
   Workout("RDL (Romanian Deadlift)", 3, 8, 135),
   Workout("Hack Squat", 3, 10, 215),
 ];
+
+final user = FirebaseAuthMethods(FirebaseAuth.instance).firebaseUser();
 
 var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
 
@@ -36,7 +40,11 @@ class _HomePageState extends State<HomePage> {
           ),
           Expanded(child: ListView.builder(itemBuilder: (_, index) {
             return listItem(workoutPlan, index);
-          }))
+          })),
+          Text(
+            user!.displayName.toString(),
+            textScaleFactor: 1.5,
+          )
         ],
       ),
     );
