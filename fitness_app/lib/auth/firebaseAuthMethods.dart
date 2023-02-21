@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_app/screens/homeScreen.dart';
@@ -5,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../widgets/snackBar.dart';
 import '../models/User.dart';
+import '../models/workout.dart';
+import '../models/workoutPlan.dart';
 
 class FirebaseAuthMethods {
   final FirebaseAuth _auth;
@@ -105,5 +109,54 @@ class FirebaseAuthMethods {
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!);
     }
+  }
+}
+
+class Database {
+  String? workoutID;
+  final db = FirebaseFirestore.instance;
+  Future<void> addWorkoutPlan({
+    required String split,
+    required String day,
+  }) async {
+    final curPlan = WorkoutPlan(
+      split: split,
+      day: day,
+    );
+    final docRef = db
+        .collection('workouts')
+        .withConverter(
+          fromFirestore: WorkoutPlan.fromFirestore,
+          toFirestore: (WorkoutPlan workoutplan, options) =>
+              workoutplan.toFirestore(),
+        )
+        .doc();
+    await docRef.set(curPlan);
+    workoutID = docRef.id.toString();
+  }
+
+  Future<void> addWorkout({
+    required String workoutID,
+    required String name,
+    required double sets,
+    required double reps,
+    required double weight,
+  }) async {
+    final curWorkout = Workout(
+      name: name,
+      sets: sets,
+      reps: reps,
+      weight: weight,
+    );
+    final docRef = db
+        .collection('workouts')
+        .doc(workoutID)
+        .collection('exercise')
+        .withConverter(
+            fromFirestore: Workout.fromFirestore,
+            toFirestore: (Workout exercise, options) => exercise.toFirestore())
+        .doc(curWorkout.name);
+
+    await docRef.set(curWorkout);
   }
 }

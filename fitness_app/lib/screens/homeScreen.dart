@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 import '../models/workoutPlan.dart';
 import 'package:fitness_app/widgets/listItem.dart';
 
-var workoutList = [
-  Workout("Barbell Squat", 3, 10, 225),
-  Workout("Leg Extension", 3, 12, 140),
-  Workout("RDL (Romanian Deadlift)", 3, 8, 135),
-  Workout("Hack Squat", 3, 10, 215),
-];
+// var workoutList = [
+//   Workout("Barbell Squat", 3, 10, 225),
+//   Workout("Leg Extension", 3, 12, 140),
+//   Workout("RDL (Romanian Deadlift)", 3, 8, 135),
+//   Workout("Hack Squat", 3, 10, 215),
+// ];
 
 final user = FirebaseAuthMethods(FirebaseAuth.instance).firebaseUser();
 
-var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
+// var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Expanded(child: ListView.builder(itemBuilder: (_, index) {
-            return listItem(workoutPlan, index);
+            // return listItem(, index);
           })),
           Text(
             user!.displayName.toString(),
