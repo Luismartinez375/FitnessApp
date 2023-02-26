@@ -33,41 +33,105 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   get description => null;
 
-  List<WorkoutCards> dynamicList = [];
-  newCard() {
-    dynamicList = [];
-    setState() {
-      dynamicList.add(new WorkoutCards());
-    }
+  List<Widget> dynamicList = [];
+  Icon floatingIcon = new Icon(Icons.add);
+  int num = 0;
+  void newCard() {
+    dynamicList.add(new Padding(
+        padding: const EdgeInsets.all(5),
+        child: Container(
+          child: TextField(
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), hintText: 'Enter your workout'),
+              style: TextStyle(fontSize: 15, height: 2.0, color: Colors.black)),
+        )));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
+        body: ListView(
       children: [
         AppBar(
-          title: Text("Day           Day Type       Workout"),
+          title: Text(
+            "Schedule",
+            textAlign: TextAlign.center,
+          ),
         ),
+        Text(
+          ' Days                     Day Type                          Workout        ',
+          style: TextStyle(
+              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.left,
+        ),
+        // Text(
+        //   'Day Type',
+        //   textAlign: TextAlign.center,
+        // ),
+        // Text(
+        //   'Workout',
+        //   textAlign: TextAlign.end,
+        // ),
+        WorkoutCards(),
 
-        WorkoutCards(),
-        WorkoutCards(),
+        Container(
+          width: 50,
+          child: TextField(
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), hintText: 'Enter your workout'),
+              style: TextStyle(fontSize: 15, height: 2.0, color: Colors.black)),
+        ),
+        Row(mainAxisSize: MainAxisSize.min, children: [
+          Expanded(
+              child: SizedBox(
+            child: TextField(
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter your workout'),
+                style:
+                    TextStyle(fontSize: 15, height: 2.0, color: Colors.black)),
+          )),
+        ]),
+        Row(mainAxisSize: MainAxisSize.min, children: [
+          const Text(
+            ' Sets                               Reps Per Set              ',
+            style: TextStyle(
+                color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.left,
+          )
+        ]),
+        Reps(),
+        Text(
+          '  Weight (Pounds)',
+          style: TextStyle(
+              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.left,
+        ),
+        Weights(),
+
+        // WorkoutCard(
+        //     exerciseName: 'exerciseName',
+        //     muscleGroup: 'muscleGroup',
+        //     description: 'description'),
         // Expanded(child: ListView.builder(itemBuilder: (_, index){
         //   return WorkoutCard(exerciseName: exerciseName, muscleGroup: muscleGroup, description: description);
         // }))
         Row(
           children: [
             Expanded(
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: new ElevatedButton(
-                  onPressed: newCard(),
-                  child: new Icon(Icons.add),
-                ),
+              child: SizedBox(
+                child: FloatingActionButton(onPressed: () {
+                  num++;
+                  setState(() {
+                    newCard();
+                  });
+                  floatingIcon;
+                }),
               ),
             ),
           ],
-        )
+        ),
+        // Row(children: dynamicList),
       ],
     ));
   }
