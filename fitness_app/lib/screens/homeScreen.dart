@@ -1,25 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import '../auth/firebaseAuthMethods.dart';
 import 'package:fitness_app/models/workout.dart';
 import 'package:flutter/material.dart';
 import '../models/workoutPlan.dart';
 import 'package:fitness_app/widgets/listItem.dart';
 import 'package:fitness_app/widgets/workoutcard.dart';
 
-var workoutList = [
-  Workout("Barbell Squat", 3, 10, 225),
-  Workout("Leg Extension", 3, 12, 140),
-  Workout("RDL", 3, 8, 135),
-  Workout("Hack Squat", 3, 10, 215),
-];
-var daysList = [
-  "Monday",
-  "Tuesday",
-  "Wedensday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday"
-];
-var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
+// var workoutList = [
+//   Workout("Barbell Squat", 3, 10, 225),
+//   Workout("Leg Extension", 3, 12, 140),
+//   Workout("RDL (Romanian Deadlift)", 3, 8, 135),
+//   Workout("Hack Squat", 3, 10, 215),
+// ];
+
+final user = FirebaseAuthMethods(FirebaseAuth.instance).firebaseUser();
+
+// var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
 
 bool ispressed = true;
 

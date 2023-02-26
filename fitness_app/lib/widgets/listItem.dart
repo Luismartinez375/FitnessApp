@@ -182,3 +182,20 @@ class _Weights extends State<Weights> {
 //           value: dropdownValue,
 //         )
 //       ],
+// Widget listItem(WorkoutPlan plan, int index) {
+//   final workouts = plan.exercies;
+//   return Container(
+//     padding: const EdgeInsets.all(10),
+//     child: ListTile(
+//       leading: Text(plan.day.toString(), style: const TextStyle(fontSize: 18)),
+//       title: Text(
+//         plan.split.toString(),
+//         style: const TextStyle(fontSize: 18),
+//       ),
+//       trailing: Text("monday",
+//           style: const TextStyle(fontSize: 18, color: Colors.black)),
+//     ),
+//     decoration: const BoxDecoration(
+//         border: Border(bottom: BorderSide(width: 1, color: Colors.black26))),
+//   );
+// }
