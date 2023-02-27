@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_app/screens/homeScreen.dart';
@@ -114,7 +112,9 @@ class FirebaseAuthMethods {
 
 class Database {
   String? workoutID;
+
   final db = FirebaseFirestore.instance;
+
   Future<void> addWorkoutPlan({
     required String split,
     required String day,
@@ -136,7 +136,7 @@ class Database {
   }
 
   Future<void> addWorkout({
-    required String workoutID,
+    required String? workoutID,
     required String name,
     required double sets,
     required double reps,

@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../auth/firebaseAuthMethods.dart';
 import '../widgets/custom_textfield.dart';
 
 class addWorkout extends StatefulWidget {
   String workoutID;
+
   addWorkout({required this.workoutID});
 
   @override
@@ -15,7 +17,6 @@ class _addWorkoutState extends State<addWorkout> {
   final TextEditingController setsController = TextEditingController();
   final TextEditingController repsController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
-
   void addWorkout(s, r, w) async {
     Database().addWorkout(
         workoutID: widget.workoutID.toString(),
@@ -31,7 +32,7 @@ class _addWorkoutState extends State<addWorkout> {
       body: ListView(
         scrollDirection: Axis.vertical,
         children: [
-          const Text('Add exercise'),
+          Text(widget.workoutID.toString()),
           const SizedBox(
             height: 20,
           ),

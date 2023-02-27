@@ -27,7 +27,7 @@ class _MyWidgetState extends State<MyWidget> {
     );
   }
 
-  String? workoutId() {
+  Future<String?> getWorkoutID() async {
     return db.workoutID;
   }
 
