@@ -23,12 +23,12 @@ class _MyWidgetState extends State<MyWidget> {
 
   void makePlan() async {
     db.addWorkoutPlan(
-      split: splitController.text,
-      day: dayController.text,
-    );
+        split: splitController.text,
+        day: dayController.text,
+        workoutIDs: [user?.uid]);
   }
 
-  String? workoutId() {
+  Future<String?> getWorkoutID() async {
     return db.workoutID;
   }
 

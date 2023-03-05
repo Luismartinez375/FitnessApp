@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:fitness_app/widgets/listItem.dart';
 import 'package:flutter/material.dart';
 import '../auth/firebaseAuthMethods.dart';
@@ -6,8 +7,6 @@ import '../widgets/custom_textfield.dart';
 class addWorkout extends StatefulWidget {
   String workoutID;
   addWorkout({required this.workoutID});
-
-  @override
   State<addWorkout> createState() => _addWorkoutState();
 }
 
@@ -16,14 +15,13 @@ class _addWorkoutState extends State<addWorkout> {
   final TextEditingController setsController = TextEditingController();
   final TextEditingController repsController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
-
-  void addWorkout(s, r, w) async {
+  void addWorkout() async {
     Database().addWorkout(
         workoutID: widget.workoutID.toString(),
         name: nameController.text,
-        sets: s,
-        reps: r,
-        weight: w);
+        sets: setsController.text,
+        reps: repsController.text,
+        weight: weightController.text);
   }
 
   @override
@@ -32,7 +30,6 @@ class _addWorkoutState extends State<addWorkout> {
       body: ListView(
         scrollDirection: Axis.vertical,
         children: [
-          WorkoutCards(),
           const Text('Add exercise'),
           const SizedBox(
             height: 20,
@@ -83,10 +80,7 @@ class _addWorkoutState extends State<addWorkout> {
                     setsController.text != "" &&
                     repsController.text != "" &&
                     weightController.text != "") {
-                  double set = 3.0;
-                  double reps = 10.0;
-                  double weight = 135.0;
-                  addWorkout(set, reps, weight);
+                  addWorkout();
                 }
               },
               child: const Text(
