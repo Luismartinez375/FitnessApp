@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Workout {
   String? name;
-  double? sets;
-  double? reps;
-  double? weight;
+  String? sets;
+  String? reps;
+  String? weight;
   bool? status = false;
   bool? unit = true;
 
