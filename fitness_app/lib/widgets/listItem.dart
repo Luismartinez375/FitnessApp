@@ -28,12 +28,13 @@ class _WorkoutCards extends State<WorkoutCards> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(5),
-      decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(width: 1, color: Colors.black26))),
-      // ignore: sort_child_properties_last
+        padding: const EdgeInsets.all(5),
+        decoration: const BoxDecoration(
+            border:
+                Border(bottom: BorderSide(width: 1, color: Colors.black26))),
+        // ignore: sort_child_properties_last
 
-      child: ListTile(
+        child: ListTile(
           minLeadingWidth: 50.0,
           leading: DropdownButton(
               value: dropdownValue,
@@ -61,60 +62,86 @@ class _WorkoutCards extends State<WorkoutCards> {
             onChanged: (value) => Split,
             textAlign: TextAlign.start,
           ),
-          trailing: SizedBox(
-            width: 150.0,
+        ));
+  }
+}
+
+class Exercises extends StatefulWidget {
+  @override
+  _Exercises createState() => _Exercises();
+}
+
+class _Exercises extends State<Exercises> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: 20,
+        padding: EdgeInsets.all(5),
+        child: Row(children: [
+          Expanded(
             child: TextField(
-              controller: Workout,
-              style: TextStyle(fontSize: 15, height: 2.0, color: Colors.black),
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter your workout'),
+                style:
+                    TextStyle(fontSize: 15, height: 2.0, color: Colors.black)),
+          ),
+          Spacer(),
+          IconButton(onPressed: () {}, icon: Icon(Icons.add))
+        ]));
+  }
+}
+
+class Sets extends StatefulWidget {
+  @override
+  _Sets createState() => _Sets();
+}
+
+class _Sets extends State<Sets> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: 10,
+        padding: const EdgeInsets.all(5),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(), hintText: 'Sets'),
+              ),
             ),
-          )),
-    );
+            Spacer(),
+            IconButton(onPressed: () {}, icon: Icon(Icons.add)),
+          ],
+        ));
   }
 }
 
 class Reps extends StatefulWidget {
+  const Reps({super.key});
+
   @override
-  _Reps createState() => _Reps();
+  State<Reps> createState() => _Reps();
 }
 
 class _Reps extends State<Reps> {
   @override
   Widget build(BuildContext context) {
     return Container(
+        width: 100,
         padding: const EdgeInsets.all(5),
         child: Row(
           children: [
             SizedBox(
-              width: 90,
+              width: 75,
               child: TextField(
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(), hintText: 'Sets'),
+                    border: OutlineInputBorder(), hintText: 'Reps'),
               ),
             ),
-            SizedBox(
-              width: 50,
-              child: TextField(
-                decoration: InputDecoration(border: OutlineInputBorder()),
-              ),
-            ),
-            SizedBox(
-              width: 50,
-              child: TextField(
-                decoration: InputDecoration(border: OutlineInputBorder()),
-              ),
-            ),
-            SizedBox(
-              width: 50,
-              child: TextField(
-                decoration: InputDecoration(border: OutlineInputBorder()),
-              ),
-            ),
-            SizedBox(
-              width: 50,
-              child: TextField(
-                decoration: InputDecoration(border: OutlineInputBorder()),
-              ),
-            )
+            Spacer(),
+            IconButton(onPressed: () {}, icon: Icon(Icons.add)),
           ],
         ));
   }
@@ -135,18 +162,11 @@ class _Weights extends State<Weights> {
           SizedBox(
               width: 75,
               child: TextField(
-                decoration: InputDecoration(border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(), hintText: 'Weight'),
               )),
-          SizedBox(
-              width: 75,
-              child: TextField(
-                decoration: InputDecoration(border: OutlineInputBorder()),
-              )),
-          SizedBox(
-              width: 75,
-              child: TextField(
-                decoration: InputDecoration(border: OutlineInputBorder()),
-              )),
+          Spacer(),
+          IconButton(onPressed: () {}, icon: Icon(Icons.add))
         ],
       ),
     );

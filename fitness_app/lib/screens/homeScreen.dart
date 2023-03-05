@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_app/screens/tPLanScreen.dart';
+import 'package:fitness_app/screens/tWorkoutScreen.dart';
 import '../auth/firebaseAuthMethods.dart';
 import 'package:fitness_app/models/workout.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +17,7 @@ import 'package:fitness_app/widgets/workoutcard.dart';
 // ];
 
 final user = FirebaseAuthMethods(FirebaseAuth.instance).firebaseUser();
-
+final db = Database();
 // var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
 
 bool ispressed = true;
@@ -43,6 +46,9 @@ class _HomePageState extends State<HomePage> {
         )));
   }
 
+  final CollectionReference _workouts =
+      FirebaseFirestore.instance.collection('workouts');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,8 +60,9 @@ class _HomePageState extends State<HomePage> {
             textAlign: TextAlign.center,
           ),
         ),
+
         Text(
-          ' Days                     Day Type                          Workout        ',
+          ' Days                     Day Type               ',
           style: TextStyle(
               color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
           textAlign: TextAlign.left,
@@ -69,33 +76,29 @@ class _HomePageState extends State<HomePage> {
         //   textAlign: TextAlign.end,
         // ),
         WorkoutCards(),
-
-        Container(
-          width: 50,
-          child: TextField(
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), hintText: 'Enter your workout'),
-              style: TextStyle(fontSize: 15, height: 2.0, color: Colors.black)),
+        Text(
+          '  Workouts',
+          style: TextStyle(
+              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.left,
         ),
-        Row(mainAxisSize: MainAxisSize.min, children: [
-          Expanded(
-              child: SizedBox(
-            child: TextField(
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Enter your workout'),
-                style:
-                    TextStyle(fontSize: 15, height: 2.0, color: Colors.black)),
-          )),
-        ]),
+        Exercises(),
+
         Row(mainAxisSize: MainAxisSize.min, children: [
           const Text(
-            ' Sets                               Reps Per Set              ',
+            ' Sets   ',
             style: TextStyle(
                 color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
             textAlign: TextAlign.left,
           )
         ]),
+        Sets(),
+        Text(
+          '  Reps',
+          style: TextStyle(
+              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.left,
+        ),
         Reps(),
         Text(
           '  Weight (Pounds)',
@@ -112,6 +115,7 @@ class _HomePageState extends State<HomePage> {
         // Expanded(child: ListView.builder(itemBuilder: (_, index){
         //   return WorkoutCard(exerciseName: exerciseName, muscleGroup: muscleGroup, description: description);
         // }))
+
         Row(
           children: [
             Expanded(
@@ -132,3 +136,27 @@ class _HomePageState extends State<HomePage> {
     ));
   }
 }
+
+//         body: StreamBuilder(
+//             stream: _workouts.snapshots(),
+//             builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+//               if (streamSnapshot.hasData) {
+//                 return ListView.builder(
+//                     itemCount: streamSnapshot.data!.docs.length,
+//                     itemBuilder: (context, index) {
+//                       final DocumentSnapshot documentSnapshot =
+//                           streamSnapshot.data!.docs[index];
+//                       return Card(
+//                           margin: const EdgeInsets.all(10),
+//                           child: ListTile(
+//                             title: Text(documentSnapshot['workouts']),
+//                             subtitle: Text(documentSnapshot['reps'].toString()),
+//                           ),
+//                           );
+//                     },
+//                     );
+//               }
+//               ;
+//             }));
+//   }
+// }

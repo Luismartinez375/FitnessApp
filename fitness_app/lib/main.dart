@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fitness_app/screens/tPLanScreen.dart';
 import 'package:flutter/material.dart';
 import 'screens/loginScreen.dart';
 import 'screens/registerScreen.dart';

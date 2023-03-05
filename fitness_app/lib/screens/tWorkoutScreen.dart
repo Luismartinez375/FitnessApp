@@ -1,3 +1,4 @@
+import 'package:fitness_app/widgets/listItem.dart';
 import 'package:flutter/material.dart';
 import '../auth/firebaseAuthMethods.dart';
 import '../widgets/custom_textfield.dart';
@@ -31,6 +32,7 @@ class _addWorkoutState extends State<addWorkout> {
       body: ListView(
         scrollDirection: Axis.vertical,
         children: [
+          WorkoutCards(),
           const Text('Add exercise'),
           const SizedBox(
             height: 20,
