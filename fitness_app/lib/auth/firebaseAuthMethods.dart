@@ -161,4 +161,25 @@ class Database {
 
     await docRef.set(curWorkout);
   }
+
+// Future<void> printWorkouts(String workoutID) async {
+//   final docRef = FirebaseFirestore.instance
+//       .collection('workouts')
+//       .doc(workoutID)
+//       .collection('workouts');
+
+//   final querySnapshot = await docRef.get();
+//   if (querySnapshot.docs.isNotEmpty) {
+//     final workouts = querySnapshot.docs.map((doc) => Workout.fromFirestore(doc, )).toList();
+//     workouts.forEach((workout) {
+//       print('Name: ${workout.name}');
+//       print('Sets: ${workout.sets}');
+//       print('Reps: ${workout.reps}');
+//       print('Weight: ${workout.weight}');
+//       print('------------------');
+//     });
+//   } else {
+//     print('No workouts found.');
+//   }
+// }
 }

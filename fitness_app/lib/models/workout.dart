@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Workout {
@@ -41,3 +42,8 @@ class Workout {
     };
   }
 }
+
+// class Days {
+//   String day;
+//   Days(this.day);
+// }
