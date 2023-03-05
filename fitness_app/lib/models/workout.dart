@@ -1,57 +1,43 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Workout {
-  String name;
-  int sets;
-  int reps;
-  double weight;
-  bool status = false;
-  bool unit = true;
+  String? name;
+  String? sets;
+  String? reps;
+  String? weight;
+  bool? status = false;
+  bool? unit = true;
 
-  Workout(this.name, this.sets, this.reps, this.weight);
+  Workout(
+      {this.name,
+      this.sets,
+      this.reps,
+      this.weight,
+      this.status = false,
+      this.unit = true});
 
-  void changeUnit(bool change) {
-    unit = change;
-    if (unit == false) {
-      weight = weight * 0.454;
-    }
+  factory Workout.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
+    return Workout(
+      name: data?['name'],
+      sets: data?['sets'],
+      reps: data?['reps'],
+      weight: data?['weight'],
+      status: data?['status'],
+      unit: data?['unit'],
+    );
   }
-
-  bool getUnit() {
-    return unit;
-  }
-
-  String getName() {
-    return name;
-  }
-
-  int getSets() {
-    return sets;
-  }
-
-  int getReps() {
-    return reps;
-  }
-
-  double getWeight() {
-    return weight;
-  }
-
-  bool getStatus() {
-    return status;
-  }
-
-  void changeStatus(bool stat) {
-    status = stat;
-  }
-
-  void amntSets(int amnt) {
-    sets = amnt;
-  }
-
-  void amntReps(int amnt) {
-    reps = amnt;
-  }
-
-  void amntWeight(double amnt) {
-    weight = amnt;
+  Map<String, dynamic> toFirestore() {
+    return {
+      if (name != null) "name": name,
+      if (sets != null) "sets": sets,
+      if (reps != null) "reps": reps,
+      if (weight != null) "weight": weight,
+      if (status != null) "status": status,
+      if (unit != null) "unit": unit,
+    };
   }
 }

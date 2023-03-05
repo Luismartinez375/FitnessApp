@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'screens/loginScreen.dart';
 import 'screens/registerScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'screens/tPLanScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.red,
           visualDensity: VisualDensity.adaptivePlatformDensity),
-      home: const LogIn(),
+      home: const MyWidget(),
     );
   }
 }
