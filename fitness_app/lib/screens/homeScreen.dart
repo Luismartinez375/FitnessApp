@@ -52,88 +52,80 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView(
-      children: [
-        AppBar(
-          title: Text(
-            "Schedule",
-            textAlign: TextAlign.center,
-          ),
+        body: ListView(children: [
+      AppBar(
+        title: Text(
+          "Schedule",
+          textAlign: TextAlign.center,
         ),
+      ),
 
-        Text(
-          ' Days                     Day Type               ',
+      Text(
+        ' Days                     Day Type               ',
+        style: TextStyle(
+            color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
+        textAlign: TextAlign.left,
+      ),
+      // Text(
+      //   'Day Type',
+      //   textAlign: TextAlign.center,
+      // ),
+      // Text(
+      //   'Workout',
+      //   textAlign: TextAlign.end,
+      // ),
+      WorkoutCards(),
+      Text(
+        '  Workouts',
+        style: TextStyle(
+            color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
+        textAlign: TextAlign.left,
+      ),
+      Exercises(),
+
+      Row(mainAxisSize: MainAxisSize.min, children: [
+        const Text(
+          ' Sets   ',
           style: TextStyle(
               color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
           textAlign: TextAlign.left,
-        ),
-        // Text(
-        //   'Day Type',
-        //   textAlign: TextAlign.center,
-        // ),
-        // Text(
-        //   'Workout',
-        //   textAlign: TextAlign.end,
-        // ),
-        WorkoutCards(),
-        Text(
-          '  Workouts',
-          style: TextStyle(
-              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
-        ),
-        Exercises(),
+        )
+      ]),
+      Sets(),
+      Text(
+        '  Reps',
+        style: TextStyle(
+            color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
+        textAlign: TextAlign.left,
+      ),
+      Reps(),
+      Text(
+        '  Weight (Pounds)',
+        style: TextStyle(
+            color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
+        textAlign: TextAlign.left,
+      ),
+      Weights(),
 
-        Row(mainAxisSize: MainAxisSize.min, children: [
-          const Text(
-            ' Sets   ',
-            style: TextStyle(
-                color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.left,
-          )
-        ]),
-        Sets(),
-        Text(
-          '  Reps',
-          style: TextStyle(
-              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
-        ),
-        Reps(),
-        Text(
-          '  Weight (Pounds)',
-          style: TextStyle(
-              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
-        ),
-        Weights(),
-
-        // WorkoutCard(
-        //     exerciseName: 'exerciseName',
-        //     muscleGroup: 'muscleGroup',
-        //     description: 'description'),
-        // Expanded(child: ListView.builder(itemBuilder: (_, index){
-        //   return WorkoutCard(exerciseName: exerciseName, muscleGroup: muscleGroup, description: description);
-        // }))
-
-        Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                child: FloatingActionButton(onPressed: () {
-                  num++;
-                  setState(() {
-                    newCard();
-                  });
-                  floatingIcon;
-                }),
-              ),
-            ),
-          ],
-        ),
-        // Row(children: dynamicList),
-      ],
-    ));
+      // WorkoutCard(
+      //     exerciseName: 'exerciseName',
+      //     muscleGroup: 'muscleGroup',
+      //     description: 'description'),
+      // Expanded(child: ListView.builder(itemBuilder: (_, index){
+      //   return WorkoutCard(exerciseName: exerciseName, muscleGroup: muscleGroup, description: description);
+      // }))
+      Expanded(
+          child: Align(
+              alignment: Alignment.bottomRight,
+              child: FloatingActionButton(onPressed: () {
+                num++;
+                setState(() {
+                  newCard();
+                });
+                floatingIcon;
+              }))),
+    ] // Row(children: dynamicList),
+            ));
   }
 }
 
