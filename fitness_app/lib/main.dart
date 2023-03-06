@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.red,
           visualDensity: VisualDensity.adaptivePlatformDensity),
-      home: const HomePage(),
+      home: const LogIn(),
       // home: const MyWidget(),
     );
   }
