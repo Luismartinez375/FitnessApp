@@ -11,6 +11,7 @@ import 'package:fitness_app/widgets/workoutcard.dart';
 
 final user = FirebaseAuthMethods(FirebaseAuth.instance).firebaseUser();
 final db = Database();
+
 // var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
 
 bool ispressed = true;
@@ -31,17 +32,44 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView(children: [
-      AppBar(
-        title: Text(
-          "HomeScreen",
+        appBar: AppBar(
+          title: Text(
+            "HomeScreen",
+          ),
         ),
-      ),
-      Align(
-          alignment: Alignment.bottomRight,
-          child: FloatingActionButton(onPressed: () {
-            setState(() {});
-          }))
-    ]));
+        body: ListView(children: [
+          SizedBox(
+              child: ListTile(
+            title: const Text('Todays Workouts'),
+            subtitle: const Text('Pull'),
+          )),
+          const Text('Lat Pulldown'),
+          SizedBox(
+              child: ListTile(
+            title: const Text('Tomorrows Workouts'),
+            subtitle: const Text('Push'),
+          )),
+          SizedBox(
+              child: ListTile(
+            title: const Text('Yesterdays Workouts'),
+            subtitle: const Text('Leg'),
+          )),
+          Container(
+            child: Text(
+              'Add Workout Plan',
+              textAlign: TextAlign.right,
+            ),
+          ),
+          Align(
+              alignment: Alignment.bottomRight,
+              child: FloatingActionButton(
+                  child: Icon(Icons.add),
+                  onPressed: () {
+                    setState(() {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MyWidget()));
+                    });
+                  }))
+        ]));
   }
 }

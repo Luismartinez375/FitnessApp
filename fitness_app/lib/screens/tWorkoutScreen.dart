@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fitness_app/screens/homeScreen.dart';
 import 'package:fitness_app/widgets/listItem.dart';
 import 'package:flutter/material.dart';
 import '../auth/firebaseAuthMethods.dart';
@@ -86,7 +87,24 @@ class _addWorkoutState extends State<addWorkout> {
               child: const Text(
                 'submit',
                 style: TextStyle(color: Colors.white),
-              ))
+              )),
+          // const SizedBox(
+          //     height: 20,
+          //     child: FloatingActionButton(
+          //         child: Icon(Icons.add),
+          //         onPressed: () {
+          //           setState(() {
+          //             Navigator.push(context,
+          //                 MaterialPageRoute(builder: (context) => HomePage()));
+          //           });
+          //         }))
+
+          // ElevatedButton(onPressed: () {
+          //   setState(() {
+          //     Navigator.push(
+          //         context, MaterialPageRoute(builder: (context) => HomePage()));
+          //   });
+          // })
         ],
       ),
     );
