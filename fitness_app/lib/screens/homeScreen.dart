@@ -11,8 +11,13 @@ import 'package:fitness_app/widgets/workoutcard.dart';
 
 final user = FirebaseAuthMethods(FirebaseAuth.instance).firebaseUser();
 final db = FirebaseFirestore.instance;
-final docRef = db.collection('users').doc(user?.uid).get();
-
+Map? data;
+final docRef = db.collection('users').doc(user?.uid);
+final userDocs = docRef.get().then((DocumentSnapshot doc) {
+  final userData = doc.data() as Map<String, dynamic>;
+  data = userData;
+  // ...
+});
 // var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
 
 bool ispressed = true;
@@ -36,6 +41,7 @@ class _HomePageState extends State<HomePage> {
           "HomeScreen",
         ),
       ),
+      Text(" "),
       StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('workouts')
