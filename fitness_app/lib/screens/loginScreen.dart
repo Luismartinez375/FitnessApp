@@ -83,7 +83,7 @@ class _LogInState extends State<LogIn> {
                       loginUser();
                     },
                     style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.red),
+                        backgroundColor: MaterialStateProperty.all(Colors.amber),
                         textStyle: MaterialStateProperty.all(
                           const TextStyle(color: Colors.white),
                         ),
@@ -91,7 +91,7 @@ class _LogInState extends State<LogIn> {
                             Size(MediaQuery.of(context).size.width / 2.5, 50))),
                     child: const Text(
                       'Login',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                     ),
                   ),
                   Padding(
