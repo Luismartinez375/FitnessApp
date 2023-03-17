@@ -10,8 +10,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
    String _selectedMenuItem = 'grid';
   List<String> photos = List.generate(
-    10,
-    (index) => Faker().image.image(width: 200, height: 200, keywords: countries));
+    9,
+    (index) => Faker().image.image(width: 200, height: 200, keywords: countries ));
  
   @override
    Widget build(BuildContext context) {
@@ -112,27 +112,6 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   
-
-  // Widget _buildMenu() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //     children: [
-  //       IconButton(
-  //         onPressed: () {
-  //           print('Photo grid button pressed');
-  //         },
-  //         icon: Icon(Icons.grid_on),
-  //       ),
-  //       IconButton(
-  //         onPressed: () {
-  //           print('Body measurements button pressed');
-  //         },
-  //         icon: Icon(Icons.accessibility),
-  //       ),
-  //     ],
-  //   );
-  // }
-
    Widget _buildMenu() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -193,7 +172,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/human_body.png'), // Replace with your actual human body image
+          image: AssetImage('assets/human_body.png'), 
           fit: BoxFit.cover,
         ),
       ),
