@@ -35,7 +35,7 @@ class _LandingState extends State<Landing> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('GymRat', style: TextStyle(fontFamily: 'Stronger'),),centerTitle: true,),
+      appBar: AppBar(title: Text('GymRat', style: TextStyle(fontFamily: 'Stronger', fontSize: 60.0),),centerTitle: true, backgroundColor: Colors.black,),
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,

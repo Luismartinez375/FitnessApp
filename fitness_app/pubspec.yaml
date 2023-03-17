@@ -40,6 +40,7 @@ dependencies:
   firebase_auth: ^4.2.6
   provider: ^6.0.5
   cloud_firestore: ^4.4.1
+  faker: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -81,9 +82,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Stronger
-      fonts:
-         - asset: fonts/Stronger.ttf
+      - family: Stronger
+        fonts:
+          - asset: assets/fonts/Stronger.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
