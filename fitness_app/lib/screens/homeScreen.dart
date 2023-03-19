@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_app/models/User.dart';
 import 'package:fitness_app/screens/tPLanScreen.dart';
 import 'package:fitness_app/screens/tWorkoutScreen.dart';
 import '../auth/firebaseAuthMethods.dart';
@@ -11,13 +12,15 @@ import 'package:fitness_app/widgets/workoutcard.dart';
 
 final user = FirebaseAuthMethods(FirebaseAuth.instance).firebaseUser();
 final db = FirebaseFirestore.instance;
-Map? data;
-final docRef = db.collection('users').doc(user?.uid);
-final userDocs = docRef.get().then((DocumentSnapshot doc) {
-  final userData = doc.data() as Map<String, dynamic>;
-  data = userData;
-  // ...
-});
+// Future<curUser> userObj() async {
+//   final ref = db.collection('users').doc(user?.uid).withConverter(
+//       fromFirestore: curUser.fromFirestore,
+//       toFirestore: (curUser user, _) => user.toFirestore());
+//   final docSnap = await ref.get();
+//   final userinfo = docSnap.data();
+//   return userinfo;
+// }
+
 // var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
 
 bool ispressed = true;
@@ -55,50 +58,7 @@ class _HomePageState extends State<HomePage> {
             "HomeScreen",
           ),
         ),
-        Text(" "),
 
-        StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('workouts')
-              .where('workoutIDs', arrayContains: user?.uid)
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            var docs = snapshot.data?.docs;
-            return Column(
-                children:
-                    docs!.map((doc) => Text(doc.data().toString())).toList());
-          },
-        ),
-        StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collectionGroup('exercise')
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            var docs = snapshot.data?.docs;
-            return Column(
-                children: docs!
-                    .map((doc) => Text(
-                          doc.data().toString(),
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red),
-                        ))
-                    .toList());
-          },
-        ),
         // Text(docRef.asStream().toString()),
 
         StreamBuilder<DocumentSnapshot>(
@@ -159,6 +119,48 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
         ),
+        StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('workouts')
+              .where('workoutIDs', arrayContains: user?.uid)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            var docs = snapshot.data?.docs;
+            return Column(
+                children:
+                    docs!.map((doc) => Text(doc.data().toString())).toList());
+          },
+        ),
+        // StreamBuilder(
+        //   stream: FirebaseFirestore.instance
+        //       .collection('workouts/${}/exercise')
+        //       .snapshots(),
+        //   builder:
+        //       (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        //     if (!snapshot.hasData) {
+        //       return const Center(
+        //         child: CircularProgressIndicator(),
+        //       );
+        //     }
+        //     var docs = snapshot.data?.docs;
+        //     return Column(
+        //         children: docs!
+        //             .map((doc) => Text(
+        //                   doc.data().toString(),
+        //                   style: TextStyle(
+        //                       fontSize: 20,
+        //                       fontWeight: FontWeight.bold,
+        //                       color: Colors.red),
+        //                 ))
+        //             .toList());
+        //   },
+        // ),
 
         // StreamBuilder<QuerySnapshot>(
         //   stream:
