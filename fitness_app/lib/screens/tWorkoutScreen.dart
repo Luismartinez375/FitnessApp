@@ -88,6 +88,7 @@ class _addWorkoutState extends State<addWorkout> {
                 'submit',
                 style: TextStyle(color: Colors.white),
               )),
+
           // const SizedBox(
           //     height: 20,
           //     child: FloatingActionButton(
