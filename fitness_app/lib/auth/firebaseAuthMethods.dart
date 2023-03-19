@@ -54,21 +54,27 @@ class FirebaseAuthMethods {
 
   //Email login
   Future<void> loginWithEmail({
-    required String email,
-    required String password,
-    required BuildContext context,
-  }) async {
-    try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Landing()));
-      if (!_auth.currentUser!.emailVerified) {
-        await sendEmailVerification(context);
-      }
-    } on FirebaseAuthException catch (e) {
-      showSnackBar(context, e.message!);
+  required String email,
+  required String password,
+  required BuildContext context,
+}) async {
+  try {
+    await _auth.signInWithEmailAndPassword(email: email, password: password);
+    
+    if (!_auth.currentUser!.emailVerified) {
+      await sendEmailVerification(context);
+    } else {
+      // Use Navigator.pushAndRemoveUntil to navigate to the landing page and empty the navigator stack
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => Landing()),
+        (Route<dynamic> route) => false, // This condition will remove all previous routes from the stack
+      );
     }
+  } on FirebaseAuthException catch (e) {
+    showSnackBar(context, e.message!);
   }
+}
 
   //Google sign in
   Future<void> signInWithGoogle(BuildContext context) async {

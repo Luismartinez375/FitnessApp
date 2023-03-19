@@ -11,6 +11,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 class Landing extends StatefulWidget {
+
+  static const String routeName = '/landing';
   
   const Landing({Key? key}) : super(key: key);
 
@@ -35,7 +37,7 @@ class _LandingState extends State<Landing> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('GymRat', style: TextStyle(fontFamily: 'Stronger', fontSize: 60.0),),centerTitle: true, backgroundColor: Colors.black,),
+      appBar: AppBar(title: Text('GymRat', style: TextStyle(fontFamily: 'Stronger', fontSize: 60.0),),centerTitle: true, backgroundColor: Colors.black, automaticallyImplyLeading: false),
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
