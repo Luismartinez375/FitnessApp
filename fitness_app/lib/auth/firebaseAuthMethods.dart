@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_app/screens/homeScreen.dart';
+import 'package:fitness_app/screens/landingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../widgets/snackBar.dart';
@@ -60,7 +61,7 @@ class FirebaseAuthMethods {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+          context, MaterialPageRoute(builder: (context) => Landing()));
       if (!_auth.currentUser!.emailVerified) {
         await sendEmailVerification(context);
       }
@@ -86,7 +87,7 @@ class FirebaseAuthMethods {
         if (userCredential.user != null) {
           //if user has credentials and is valid user navigate to home page
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
+              context, MaterialPageRoute(builder: (context) => Landing()));
           if (userCredential.additionalUserInfo!.isNewUser) {
             ///if user signs in through google
             ///and is new user
