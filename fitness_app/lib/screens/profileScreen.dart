@@ -1,5 +1,24 @@
+import 'package:fitness_app/screens/loginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:faker/faker.dart';
+import '../auth/firebaseAuthMethods.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fitness_app/screens/editProfileScreen.dart';
+
+final user = FirebaseAuthMethods(FirebaseAuth.instance).firebaseUser();
+final db = FirebaseFirestore.instance;
+Map? data;
+final docRef = db.collection('users').doc(user?.uid);
+final userDocs = docRef.get().then((DocumentSnapshot doc) {
+  final userData = doc.data() as Map<String, dynamic>;
+  data = userData;
+  // ...
+});
+final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+_signOut() async {
+  await _firebaseAuth.signOut();
+}
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -7,14 +26,14 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
-   String _selectedMenuItem = 'grid';
+  String _selectedMenuItem = 'grid';
   List<String> photos = List.generate(
-    9,
-    (index) => Faker().image.image(width: 200, height: 200, keywords: countries ));
- 
+      9,
+      (index) =>
+          Faker().image.image(width: 200, height: 200, keywords: countries));
+
   @override
-   Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
@@ -23,8 +42,13 @@ class _ProfilePageState extends State<ProfilePage> {
             onSelected: (String value) {
               if (value == 'edit_profile') {
                 print('Edit profile selected');
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => EditProfilePage()));
               } else if (value == 'logout') {
                 print('Logout selected');
+                _signOut();
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => LogIn()));
               }
             },
             itemBuilder: (BuildContext context) {
@@ -59,7 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-   Widget _buildHeader() {
+  Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -69,11 +93,12 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               CircleAvatar(
                 radius: 48,
-                backgroundImage: NetworkImage('https://via.placeholder.com/150'),
+                backgroundImage:
+                    NetworkImage('https://via.placeholder.com/150'),
               ),
               SizedBox(height: 8),
               Text(
-                'Username',
+                user!.displayName.toString(),
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],
@@ -111,8 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  
-   Widget _buildMenu() {
+  Widget _buildMenu() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -168,45 +192,43 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
- Widget _buildMeasurementsContent() {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/human_body.png'), 
-          fit: BoxFit.cover,
-        ),
+Widget _buildMeasurementsContent() {
+  return Container(
+    decoration: BoxDecoration(
+      image: DecorationImage(
+        image: AssetImage('assets/human_body.png'),
+        fit: BoxFit.cover,
       ),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Age:'), // Add the Age field
-            SizedBox(height: 8),
-            Text('Gender:'), // Add the Gender field
-            SizedBox(height: 8),
-            Text('Height:'), // Add the Height field
-            SizedBox(height: 8),
-            Text('Weight:'), // Add the Weight field
-            SizedBox(height: 8),
-            Text('BMI:'), // Add the BMI field
-            SizedBox(height: 8),
-            Text('Waist:'), // Add the Waist field
-            SizedBox(height: 8),
-            Text('Hip:'), // Add the Hip field
-            SizedBox(height: 8),
-            Text('Forearm:'), // Add the Forearm field
-            SizedBox(height: 8),
-            Text('Neck:'), // Add the Neck field
-            SizedBox(height: 8),
-            Text('Abdomen:'), // Add the Abdomen field
-            SizedBox(height: 8),
-            Text('Body Fat:'), // Add the Body Fat field
-            SizedBox(height: 8),
-          ],
-        ),
+    ),
+    child: SingleChildScrollView(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Age:'), // Add the Age field
+          SizedBox(height: 8),
+          Text('Gender:'), // Add the Gender field
+          SizedBox(height: 8),
+          Text('Height:'), // Add the Height field
+          SizedBox(height: 8),
+          Text('Weight:'), // Add the Weight field
+          SizedBox(height: 8),
+          Text('BMI:'), // Add the BMI field
+          SizedBox(height: 8),
+          Text('Waist:'), // Add the Waist field
+          SizedBox(height: 8),
+          Text('Hip:'), // Add the Hip field
+          SizedBox(height: 8),
+          Text('Forearm:'), // Add the Forearm field
+          SizedBox(height: 8),
+          Text('Neck:'), // Add the Neck field
+          SizedBox(height: 8),
+          Text('Abdomen:'), // Add the Abdomen field
+          SizedBox(height: 8),
+          Text('Body Fat:'), // Add the Body Fat field
+          SizedBox(height: 8),
+        ],
       ),
-    );
-  }
-
-  
+    ),
+  );
+}

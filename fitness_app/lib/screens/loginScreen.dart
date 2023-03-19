@@ -1,11 +1,6 @@
 import 'package:fitness_app/screens/registerScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gymrat_example/services/firebase_auth_methods.dart';
-import 'package:gymrat_example/widgets/custom_text_field.dart';
-import 'package:gymrat_example/widgets/google_sign_in_button.dart';
-import 'package:gymrat_example/screens/email_password_signup.dart';
-
 import '../auth/firebaseAuthMethods.dart';
 import '../widgets/custom_textfield.dart';
 import '../widgets/googleSigninButton.dart';
@@ -91,7 +86,10 @@ class _LogInState extends State<LogIn> {
                           Size(MediaQuery.of(context).size.width / 2.5, 50))),
                   child: const Text(
                     'Login',
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
                   ),
                 ),
 
@@ -125,6 +123,3 @@ class _LogInState extends State<LogIn> {
     );
   }
 }
-               
-
-
