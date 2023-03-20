@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_app/models/User.dart';
 import 'package:fitness_app/screens/tPLanScreen.dart';
 import 'package:fitness_app/screens/tWorkoutScreen.dart';
 import '../auth/firebaseAuthMethods.dart';
@@ -9,15 +10,9 @@ import '../models/workoutPlan.dart';
 import 'package:fitness_app/widgets/listItem.dart';
 import 'package:fitness_app/widgets/workoutcard.dart';
 
-// var workoutList = [
-//   Workout("Barbell Squat", 3, 10, 225),
-//   Workout("Leg Extension", 3, 12, 140),
-//   Workout("RDL (Romanian Deadlift)", 3, 8, 135),
-//   Workout("Hack Squat", 3, 10, 215),
-// ];
-
 final user = FirebaseAuthMethods(FirebaseAuth.instance).firebaseUser();
-final db = Database();
+final db = FirebaseFirestore.instance;
+
 // var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
 
 bool ispressed = true;
@@ -32,131 +27,156 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   get description => null;
 
-  List<Widget> dynamicList = [];
-  Icon floatingIcon = new Icon(Icons.add);
-  int num = 0;
-  void newCard() {
-    dynamicList.add(new Padding(
-        padding: const EdgeInsets.all(5),
-        child: Container(
-          child: TextField(
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), hintText: 'Enter your workout'),
-              style: TextStyle(fontSize: 15, height: 2.0, color: Colors.black)),
-        )));
-  }
+  int _selectedIndex = 0;
 
-  final CollectionReference _workouts =
-      FirebaseFirestore.instance.collection('workouts');
+  static const List<Widget> _widgetOptions = <Widget>[
+    Text('Home'),
+    Text('Search'),
+    Text('Profile'),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView(
-      children: [
+      body: ListView(children: [
         AppBar(
-          title: Text(
-            "Schedule",
-            textAlign: TextAlign.center,
+          title: const Text(
+            "HomeScreen",
           ),
         ),
 
-        Text(
-          ' Days                     Day Type               ',
-          style: TextStyle(
-              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
+        //Stream builder to get user info
+        StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(user?.uid)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text('Loading...');
+            }
+            final data = snapshot.data!;
+            final name = data.get('Name');
+            final lastName = data.get('lastName');
+            final email = data.get('email');
+            final workoutids = data.get('workout-IDs');
+            return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'First Name: $name',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red),
+                  ),
+                  Text(
+                    'Last Name: $lastName',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red),
+                  ),
+                  Text(
+                    'Email: $email',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red),
+                  ),
+                  Text(
+                    'Workouts: $workoutids',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red),
+                  ),
+                ]);
+          },
         ),
-        // Text(
-        //   'Day Type',
-        //   textAlign: TextAlign.center,
-        // ),
-        // Text(
-        //   'Workout',
-        //   textAlign: TextAlign.end,
-        // ),
-        WorkoutCards(),
-        Text(
-          '  Workouts',
-          style: TextStyle(
-              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
-        ),
-        Exercises(),
 
-        Row(mainAxisSize: MainAxisSize.min, children: [
-          const Text(
-            ' Sets   ',
-            style: TextStyle(
-                color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.left,
-          )
-        ]),
-        Sets(),
-        Text(
-          '  Reps',
-          style: TextStyle(
-              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
+        // streambuilder to get workouts
+        StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(user?.uid)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text('Loading...');
+            }
+            final data = snapshot.data!;
+            final workoutids = data.get('workout-IDs');
+            return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (var num in workoutids)
+                    StreamBuilder(
+                        stream: db
+                            .collection('workouts/${num}/exercise')
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (!snapshot.hasData) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          var docs = snapshot.data?.docs;
+                          return Column(
+                              children: docs!
+                                  .map((doc) => Text(doc.data().toString()))
+                                  .toList());
+                        })
+                ]);
+          },
         ),
-        Reps(),
-        Text(
-          '  Weight (Pounds)',
-          style: TextStyle(
-              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
+        //streambuilder for workout days
+        StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('workouts')
+              .where('workoutIDs', arrayContains: user?.uid)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            var docs = snapshot.data?.docs;
+            return Column(
+                children:
+                    docs!.map((doc) => Text(doc.data().toString())).toList());
+          },
         ),
-        Weights(),
 
-        // WorkoutCard(
-        //     exerciseName: 'exerciseName',
-        //     muscleGroup: 'muscleGroup',
-        //     description: 'description'),
-        // Expanded(child: ListView.builder(itemBuilder: (_, index){
-        //   return WorkoutCard(exerciseName: exerciseName, muscleGroup: muscleGroup, description: description);
-        // }))
-
-        Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                child: FloatingActionButton(onPressed: () {
-                  num++;
-                  setState(() {
-                    newCard();
-                  });
-                  floatingIcon;
-                }),
-              ),
-            ),
-          ],
-        ),
-        // Row(children: dynamicList),
-      ],
-    ));
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => MyWidget()));
+                });
+              },
+              child: Icon(Icons.add),
+            )),
+      ]),
+    );
   }
 }
-
-//         body: StreamBuilder(
-//             stream: _workouts.snapshots(),
-//             builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-//               if (streamSnapshot.hasData) {
-//                 return ListView.builder(
-//                     itemCount: streamSnapshot.data!.docs.length,
-//                     itemBuilder: (context, index) {
-//                       final DocumentSnapshot documentSnapshot =
-//                           streamSnapshot.data!.docs[index];
-//                       return Card(
-//                           margin: const EdgeInsets.all(10),
-//                           child: ListTile(
-//                             title: Text(documentSnapshot['workouts']),
-//                             subtitle: Text(documentSnapshot['reps'].toString()),
-//                           ),
-//                           );
-//                     },
-//                     );
-//               }
-//               ;
-//             }));
-//   }
-// }

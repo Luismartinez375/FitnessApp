@@ -112,8 +112,6 @@ class FirebaseAuthMethods {
 }
 
 class Database {
-  String? workoutID;
-
   final db = FirebaseFirestore.instance;
 
   Future<void> addWorkoutPlan({
@@ -135,7 +133,16 @@ class Database {
         )
         .doc();
     await docRef.set(curPlan);
-    workoutID = docRef.id.toString();
+    final data = {'curWorkout': docRef.id};
+    final addID = db
+        .collection('users')
+        .doc(user?.uid)
+        .set(data, SetOptions(merge: true));
+    await addID;
+    final addIDList = db.collection('users').doc(user?.uid);
+    addIDList.update({
+      'workout-IDs': FieldValue.arrayUnion([docRef.id.toString()])
+    });
   }
 
   Future<void> addWorkout({
@@ -162,25 +169,4 @@ class Database {
 
     await docRef.set(curWorkout);
   }
-
-// Future<void> printWorkouts(String workoutID) async {
-//   final docRef = FirebaseFirestore.instance
-//       .collection('workouts')
-//       .doc(workoutID)
-//       .collection('workouts');
-
-//   final querySnapshot = await docRef.get();
-//   if (querySnapshot.docs.isNotEmpty) {
-//     final workouts = querySnapshot.docs.map((doc) => Workout.fromFirestore(doc, )).toList();
-//     workouts.forEach((workout) {
-//       print('Name: ${workout.name}');
-//       print('Sets: ${workout.sets}');
-//       print('Reps: ${workout.reps}');
-//       print('Weight: ${workout.weight}');
-//       print('------------------');
-//     });
-//   } else {
-//     print('No workouts found.');
-//   }
-// }
 }

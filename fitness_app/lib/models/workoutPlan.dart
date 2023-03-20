@@ -24,7 +24,7 @@ class WorkoutPlan {
     return {
       if (day != null) "day": day,
       if (split != null) "split": split,
-      if (workoutIDs != null) "workouIDs": workoutIDs,
+      if (workoutIDs != null) "workoutIDs": workoutIDs,
     };
   }
 }
