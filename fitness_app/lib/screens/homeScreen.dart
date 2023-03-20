@@ -12,14 +12,6 @@ import 'package:fitness_app/widgets/workoutcard.dart';
 
 final user = FirebaseAuthMethods(FirebaseAuth.instance).firebaseUser();
 final db = FirebaseFirestore.instance;
-// Future<curUser> userObj() async {
-//   final ref = db.collection('users').doc(user?.uid).withConverter(
-//       fromFirestore: curUser.fromFirestore,
-//       toFirestore: (curUser user, _) => user.toFirestore());
-//   final docSnap = await ref.get();
-//   final userinfo = docSnap.data();
-//   return userinfo;
-// }
 
 // var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
 
@@ -59,8 +51,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
 
-        // Text(docRef.asStream().toString()),
-
+        //Stream builder to get user info
         StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance
               .collection('users')
@@ -114,11 +105,47 @@ class _HomePageState extends State<HomePage> {
           },
         ),
 
-        Text(
-          user!.displayName.toString(),
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+        // streambuilder to get workouts
+        StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(user?.uid)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text('Loading...');
+            }
+            final data = snapshot.data!;
+            final workoutids = data.get('workout-IDs');
+            return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (var num in workoutids)
+                    StreamBuilder(
+                        stream: db
+                            .collection('workouts/${num}/exercise')
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (!snapshot.hasData) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          var docs = snapshot.data?.docs;
+                          return Column(
+                              children: docs!
+                                  .map((doc) => Text(doc.data().toString()))
+                                  .toList());
+                        })
+                ]);
+          },
         ),
+        //streambuilder for workout days
         StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('workouts')
@@ -137,121 +164,7 @@ class _HomePageState extends State<HomePage> {
                     docs!.map((doc) => Text(doc.data().toString())).toList());
           },
         ),
-        // StreamBuilder(
-        //   stream: FirebaseFirestore.instance
-        //       .collection('workouts/${}/exercise')
-        //       .snapshots(),
-        //   builder:
-        //       (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        //     if (!snapshot.hasData) {
-        //       return const Center(
-        //         child: CircularProgressIndicator(),
-        //       );
-        //     }
-        //     var docs = snapshot.data?.docs;
-        //     return Column(
-        //         children: docs!
-        //             .map((doc) => Text(
-        //                   doc.data().toString(),
-        //                   style: TextStyle(
-        //                       fontSize: 20,
-        //                       fontWeight: FontWeight.bold,
-        //                       color: Colors.red),
-        //                 ))
-        //             .toList());
-        //   },
-        // ),
 
-        // StreamBuilder<QuerySnapshot>(
-        //   stream:
-        //       FirebaseFirestore.instance.collectionGroup('exercise').snapshots(),
-        //   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        //     if (!snapshot.hasData) {
-        //       return const Center(
-        //         child: CircularProgressIndicator(),
-        //       );
-        //     }
-        //     var docs = snapshot.data?.docs;
-        //     return ListView.builder(
-        //       itemCount: docs!.length,
-        //       itemBuilder: (BuildContext context, int index) {
-        //         Map<String, dynamic>? data =
-        //             docs[index].data() as Map<String, dynamic>?;
-        //         return Container(
-        //           margin: const EdgeInsets.all(10),
-        //           padding: const EdgeInsets.all(10),
-        //           decoration: BoxDecoration(
-        //             border: Border.all(color: Colors.grey),
-        //             borderRadius: BorderRadius.circular(10),
-        //           ),
-        //           child: Column(
-        //             crossAxisAlignment: CrossAxisAlignment.start,
-        //             children: [
-        //               Text(
-        //                 data!['name'],
-        //                 style: const TextStyle(
-        //                   fontSize: 20,
-        //                   fontWeight: FontWeight.bold,
-        //                 ),
-        //               ),
-        //               const SizedBox(height: 10),
-        //               Text(
-        //                 'Reps: ${data['reps']}',
-        //                 style: const TextStyle(fontSize: 16),
-        //               ),
-        //               Text(
-        //                 'Sets: ${data['sets']}',
-        //                 style: const TextStyle(fontSize: 16),
-        //               ),
-        //               Text(
-        //                 'Weight: ${data['weight']}',
-        //                 style: const TextStyle(fontSize: 16),
-        //               ),
-        //             ],
-        //           ),
-        //         );
-        //       },
-        //     );
-        //   },
-        // ),
-        //   StreamBuilder<QuerySnapshot>(
-        // stream: FirebaseFirestore.instance
-        //     .collectionGroup('exercise')
-        //     .snapshots(),
-        // builder:
-        //     (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        //   if (snapshot.hasError) {
-        //     return Center(
-        //       child: Text('Error: ${snapshot.error}'),
-        //     );
-        //   }
-
-        //   if (!snapshot.hasData) {
-        //     return const Center(
-        //       child: CircularProgressIndicator(),
-        //     );
-        //   }
-
-        //   final List<DocumentSnapshot> documents = snapshot.data!.docs;
-
-        //   return ListView.builder(
-        //       itemCount: documents.length,
-        //       itemBuilder: (BuildContext context, int index) {
-        //         final Map<String, dynamic> data =
-        //             documents[index].data() as Map<String, dynamic>;
-
-        //         return Card(
-        //           child: ListTile(
-        //             leading: CircleAvatar(
-        //               child: Text(data['id'].toString()),
-        //             ),
-        //             title: Text(data['name']),
-        //             subtitle: Text(data['description']),
-        //             trailing: Text(data['duration'].toString() + ' min'),
-        //           ),
-        //         );
-        //       });
-        // }),
         Align(
             alignment: Alignment.bottomCenter,
             child: FloatingActionButton(

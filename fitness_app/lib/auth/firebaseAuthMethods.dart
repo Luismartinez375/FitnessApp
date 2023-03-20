@@ -111,8 +111,6 @@ class FirebaseAuthMethods {
 }
 
 class Database {
-  String? workoutID;
-
   final db = FirebaseFirestore.instance;
 
   Future<void> addWorkoutPlan({
@@ -134,7 +132,16 @@ class Database {
         )
         .doc();
     await docRef.set(curPlan);
-    workoutID = docRef.id.toString();
+    final data = {'curWorkout': docRef.id};
+    final addID = db
+        .collection('users')
+        .doc(user?.uid)
+        .set(data, SetOptions(merge: true));
+    await addID;
+    final addIDList = db.collection('users').doc(user?.uid);
+    addIDList.update({
+      'workout-IDs': FieldValue.arrayUnion([docRef.id.toString()])
+    });
   }
 
   Future<void> addWorkout({

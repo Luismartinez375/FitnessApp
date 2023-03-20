@@ -28,10 +28,6 @@ class _MyWidgetState extends State<MyWidget> {
         workoutIDs: [user?.uid]);
   }
 
-  Future<String?> getWorkoutID() async {
-    return db.workoutID;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,12 +59,8 @@ class _MyWidgetState extends State<MyWidget> {
             onPressed: () {
               if (splitController.text != "" && dayController.text != "") {
                 makePlan();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => addWorkout(
-                              workoutID: db.workoutID.toString(),
-                            )));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => addWorkout()));
               } else {
                 showSnackBar(context, 'please enter fields');
               }
