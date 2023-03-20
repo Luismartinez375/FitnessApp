@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fitness_app/screens/WorkoutPage.dart';
+import 'package:fitness_app/screens/landingScreen.dart';
 import 'package:fitness_app/screens/tPLanScreen.dart';
+import 'package:fitness_app/screens/tWorkoutScreen.dart';
 import 'package:flutter/material.dart';
 import 'screens/loginScreen.dart';
 import 'screens/registerScreen.dart';
@@ -24,7 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.red,
           visualDensity: VisualDensity.adaptivePlatformDensity),
-      home: const LogIn(),
+      home: LogIn(),
       // home: const MyWidget(),
     );
   }
