@@ -1,4 +1,6 @@
+import 'package:fitness_app/auth/firebaseAuthMethods.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:faker/faker.dart';
 
 class ProfilePage extends StatefulWidget {

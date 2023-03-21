@@ -136,7 +136,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     ],
   };
 
-  Future<void> _showExerciseDialog(String imageUrl, String exerciseName) async {
+  Future<void> _showExerciseDialog(String imageUrl, String exerciseName, String category) async {
     int sets = 1;
     int reps = 1;
 
@@ -260,7 +260,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    await _saveExercise(imageUrl, exerciseName, sets, reps);
+                    await _saveExercise(imageUrl, exerciseName, _selectedCategory! ,sets, reps);
                     Navigator.pop(context);
                   },
                   child: Text('Save'),
@@ -276,7 +276,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
 
 
   Future<void> _saveExercise(
-      String imageUrl, String exerciseName, int sets, int reps) async {
+       String imageUrl, String exerciseName, String category, int sets, int reps) async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
     // Get the reference to the user's workouts collection
@@ -308,6 +308,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
 
           // Update the exercise with the same name
           exercises[i]['imageUrl'] = imageUrl;
+          exercises[i]['category'] = category;
           exercises[i]['sets'] = sets;
           exercises[i]['reps'] = reps;
           
@@ -327,6 +328,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
         exercises.add({
           'imageUrl': imageUrl,
           'name': exerciseName,
+          'category': category,
           'sets': sets,
           'reps': reps,
         });
@@ -425,7 +427,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
             setState(() {
               _selectedExerciseIndex = index;
             });
-            _showExerciseDialog(imageUrl, name);
+            _showExerciseDialog(imageUrl, name, _selectedCategory!);
           },
           child: Container(
             decoration: BoxDecoration(
