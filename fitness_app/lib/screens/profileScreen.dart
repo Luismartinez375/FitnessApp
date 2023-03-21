@@ -1,214 +1,151 @@
-import 'package:fitness_app/auth/firebaseAuthMethods.dart';
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:faker/faker.dart';
+import 'package:flutter/material.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
+
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfileScreenState extends State<ProfileScreen> {
+  final _auth = FirebaseAuth.instance;
 
-   String _selectedMenuItem = 'grid';
-  List<String> photos = List.generate(
-    9,
-    (index) => Faker().image.image(width: 200, height: 200, keywords: countries ));
- 
-  @override
-   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (String value) {
-              if (value == 'edit_profile') {
-                print('Edit profile selected');
-              } else if (value == 'logout') {
-                print('Logout selected');
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem<String>(
-                  value: 'edit_profile',
-                  child: Text('Edit Profile'),
-                ),
-                PopupMenuItem<String>(
-                  value: 'logout',
-                  child: Text('Logout'),
-                ),
-              ];
-            },
-            icon: Icon(Icons.menu),
-            offset: Offset(0, kToolbarHeight),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 16),
-            _buildHeader(),
-            SizedBox(height: 16),
-            _buildMenu(),
-            SizedBox(height: 16),
-            _buildContent(),
-          ],
-        ),
-      ),
-    );
-  }
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Profile'),
+    ),
+    body: FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance
+          .collection('users')
+          .doc(_auth.currentUser!.uid)
+          .get(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-   Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            children: [
-              CircleAvatar(
-                radius: 48,
-                backgroundImage: NetworkImage('https://via.placeholder.com/150'),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Username',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          SizedBox(width: 16),
-          Expanded(
+        if (snapshot.hasError) {
+          return Center(child: Text('Something went wrong'));
+        }
+
+        final userData = snapshot.data!.data() as Map<String, dynamic>;
+        String height = "${userData['heightft']}'${userData['heightinch']}\"ft";
+
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    _buildCounter('Posts', 50),
-                    _buildCounter('Followers', 100),
-                    _buildCounter('Following', 200),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '${userData['Name']} ${userData['lastName']}',
+                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          smallCard('Age', '${userData['age']}'),
+                          smallCard('Gender', '${userData['gender']}'),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          smallCard('Height', height),
+                          smallCard('Weight', '${userData['weight']}'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Navigate to edit profile page
+                    },
+                    child: Text('Edit'),
+                  ),
+                ),
+                SizedBox(height: 16),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          smallCard('Neck', '${userData['neck']}'),
+                          smallCard('Shoulder', '${userData['shoulder']}'),
+                          smallCard('Chest', '${userData['chest']}'),
+                          smallCard('Waist', '${userData['waist']}'),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          smallCard('Hip', '${userData['hip']}'),
+                          smallCard('Bicep', '${userData['bicep']}'),
+                          smallCard('Thigh', '${userData['thigh']}'),
+                          smallCard('BMI', '${userData['BMI']}'),
+                          smallCard('Body Fat', '${userData['bodyFat']}'),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: Image.asset(
+                          'assets/human_body.png',
+                          height: MediaQuery.of(context).size.height * 0.4,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCounter(String label, int count) {
-    return Column(
-      children: [
-        Text(
-          count.toString(),
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 4),
-        Text(label),
-      ],
-    );
-  }
-
-  
-   Widget _buildMenu() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        IconButton(
-          onPressed: () {
-            setState(() {
-              _selectedMenuItem = 'grid';
-            });
-          },
-          icon: Icon(Icons.grid_on),
-        ),
-        IconButton(
-          onPressed: () {
-            setState(() {
-              _selectedMenuItem = 'info';
-            });
-          },
-          icon: Icon(Icons.accessibility),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildContent() {
-    if (_selectedMenuItem == 'grid') {
-      return _buildPhotoGrid();
-    } else {
-      return _buildMeasurementsContent();
-    }
-  }
-
-  Widget _buildPhotoGrid() {
-    return GridView.builder(
-      padding: EdgeInsets.all(8),
-      itemCount: photos.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 8,
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        // Display the images in the newest order.
-        String imageUrl = photos[photos.length - 1 - index];
-
-        return Image.network(
-          imageUrl,
-          fit: BoxFit.cover,
         );
       },
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-    );
-  }
+    ),
+  );
 }
 
- Widget _buildMeasurementsContent() {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/human_body.png'), 
-          fit: BoxFit.cover,
-        ),
+Widget smallCard(String title, String value) {
+  return Card(
+    margin: EdgeInsets.all(4),
+    child: Padding(
+      padding: EdgeInsets.all(8),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          SizedBox(height: 4),
+          Text(value, style: TextStyle(fontSize: 12)),
+        ],
       ),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Age:'), // Add the Age field
-            SizedBox(height: 8),
-            Text('Gender:'), // Add the Gender field
-            SizedBox(height: 8),
-            Text('Height:'), // Add the Height field
-            SizedBox(height: 8),
-            Text('Weight:'), // Add the Weight field
-            SizedBox(height: 8),
-            Text('BMI:'), // Add the BMI field
-            SizedBox(height: 8),
-            Text('Waist:'), // Add the Waist field
-            SizedBox(height: 8),
-            Text('Hip:'), // Add the Hip field
-            SizedBox(height: 8),
-            Text('Forearm:'), // Add the Forearm field
-            SizedBox(height: 8),
-            Text('Neck:'), // Add the Neck field
-            SizedBox(height: 8),
-            Text('Abdomen:'), // Add the Abdomen field
-            SizedBox(height: 8),
-            Text('Body Fat:'), // Add the Body Fat field
-            SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-
-  
+    ),
+  );
+}
+}

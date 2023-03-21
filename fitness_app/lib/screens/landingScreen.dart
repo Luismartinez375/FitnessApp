@@ -1,4 +1,5 @@
 import 'package:fitness_app/auth/firebaseAuthMethods.dart';
+import 'package:fitness_app/screens/DailyWorkout.dart';
 import 'package:fitness_app/screens/WorkoutPage.dart';
 import 'package:fitness_app/screens/homeScreen.dart';
 import 'package:fitness_app/screens/profileScreen.dart';
@@ -23,9 +24,9 @@ class Landing extends StatefulWidget {
 class _LandingState extends State<Landing> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
-    HomePage(),
+    DailyWorkout(),
     WorkoutPage(),
-    // ProfilePage(),
+    ProfileScreen(),
   ];
 
   void _onTabTapped(int index) {
@@ -84,7 +85,7 @@ class _LandingState extends State<Landing> {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.fitness_center), label: 'Workout'),
-         // BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );

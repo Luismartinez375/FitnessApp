@@ -19,57 +19,76 @@ class _DailyWorkoutState extends State<DailyWorkout> {
     _currentDay = DateFormat('EEEE').format(DateTime.now());
   }
 
-   @override
-  Widget build(BuildContext context) {
-    final currentUser = FirebaseAuth.instance.currentUser;
+  Stream<QuerySnapshot> getDailyWorkouts() {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('workoutplans')
+        .where('dayOfWeek', isEqualTo: _currentDay)
+        .snapshots();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 100.0,
         title: Text(
           _currentDay,
-          style: TextStyle(fontFamily: 'Stronger', fontSize: 24.0),
+          style: TextStyle(fontFamily: 'Stronger', fontSize: 100.0),
         ),
         centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('workoutplan')
-            .where('dayOfWeek', isEqualTo: _currentDay)
-            .where('userId', isEqualTo: currentUser?.uid)
-            .snapshots(),
+        stream: getDailyWorkouts(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Something went wrong');
-          }
-
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
 
-          return ListView(
-            children: snapshot.data!.docs.map((DocumentSnapshot document) {
-              Map<String, dynamic> data =
-                  document.data() as Map<String, dynamic>;
-              Map<String, dynamic> exercises = data['exercises'];
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: exercises.keys.length,
-                itemBuilder: (BuildContext context, int index) {
-                  String key = exercises.keys.elementAt(index);
-                  return ExpansionTile(
-                    title: Text(key),
-                    children: [
-                      ListTile(
-                        leading: Image.network(exercises[key]['imageUrl']),
-                        title: Text(exercises[key]['name']),
-                        subtitle: Text(
-                            'Sets: ${exercises[key]['sets']} - Reps: ${exercises[key]['reps']}'),
+          final workouts = snapshot.data!.docs;
+
+          return ListView.builder(
+            itemCount: workouts.length,
+            itemBuilder: (BuildContext context, int index) {
+              final exercises =
+                  workouts[index]['exercises'] as List<dynamic>;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: exercises.map((exercise) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade200, width: 1),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    margin: EdgeInsets.symmetric(vertical: 4),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                      leading: SizedBox(
+                        width: 85,
+                        height: 50,
+                        child: Image.asset(exercise['imageUrl'],
+                            fit: BoxFit.cover),
                       ),
-                    ],
+                      title: Text(
+                        '${exercise['name']}',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Sets: ${exercise['sets']}'),
+                          SizedBox(width: 8),
+                          Text('Reps: ${exercise['reps']}'),
+                        ],
+                      ),
+                    ),
                   );
-                },
+                }).toList(),
               );
-            }).toList(),
+            },
           );
         },
       ),
