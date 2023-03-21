@@ -1,15 +1,34 @@
 import 'dart:collection';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../screens/homeScreen.dart';
 
 /// Example event class.
 class Event {
-  final String title;
+  final String name;
+  final String sets;
+  final String reps;
+  final String weight;
 
-  const Event(this.title);
+  const Event(this.name, this.sets, this.reps, this.weight);
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'sets': sets,
+      'reps': reps,
+      'weight': weight,
+    };
+  }
+
+  Event.fromFirestore(Map<String, dynamic> firestore)
+      : name = firestore['name'],
+        sets = firestore['sets'],
+        reps = firestore['reps'],
+        weight = firestore['weight'];
 
   @override
-  String toString() => title;
+  String toString() => name;
 }
 
 /// Example events.
@@ -20,16 +39,7 @@ final kEvents = LinkedHashMap<DateTime, List<Event>>(
   hashCode: getHashCode,
 )..addAll(_kEventSource);
 
-final _kEventSource = Map.fromIterable(List.generate(50, (index) => index),
-    key: (item) => DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
-    value: (item) => List.generate(
-        item % 4 + 1, (index) => Event('Event $item | ${index + 1}')))
-  ..addAll({
-    kToday: [
-      Event('Today\'s Event 1'),
-      Event('Today\'s Event 2'),
-    ],
-  });
+Map<DateTime, List<Event>> _kEventSource = {};
 
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;

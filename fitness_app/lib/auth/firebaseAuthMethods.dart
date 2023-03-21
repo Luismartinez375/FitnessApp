@@ -132,12 +132,13 @@ class Database {
     required String split,
     required String day,
     required List<String?>? workoutIDs,
+    required DateTime? workoutDate,
   }) async {
     final curPlan = WorkoutPlan(
-      split: split,
-      day: day,
-      workoutIDs: workoutIDs,
-    );
+        split: split,
+        day: day,
+        workoutIDs: workoutIDs,
+        workoutDate: workoutDate);
     final docRef = db
         .collection('workouts')
         .withConverter(

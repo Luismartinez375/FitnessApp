@@ -110,134 +110,155 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(children: [
+      body: Column(children: [
         TableCalendar(
+          firstDay: kFirstDay,
+          lastDay: kLastDay,
           focusedDay: _focusedDay,
-          firstDay: DateTime.utc(2023, 1, 1),
-          lastDay: DateTime.utc(2030, 12, 31),
+          selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+          rangeStartDay: _rangeStart,
+          rangeEndDay: _rangeEnd,
           calendarFormat: _calendarFormat,
-          selectedDayPredicate: (day) {
-            // Use `selectedDayPredicate` to determine which day is currently selected.
-            // If this returns true, then `day` will be marked as selected.
-
-            // Using `isSameDay` is recommended to disregard
-            // the time-part of compared DateTime objects.
-            return isSameDay(_selectedDay, day);
-          },
-          onDaySelected: (selectedDay, focusedDay) {
-            if (!isSameDay(_selectedDay, selectedDay)) {
-              // Call `setState()` when updating the selected day
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
-            }
-          },
+          rangeSelectionMode: _rangeSelectionMode,
+          eventLoader: _getEventsForDay,
+          startingDayOfWeek: StartingDayOfWeek.monday,
+          calendarStyle: CalendarStyle(
+            // Use `CalendarStyle` to customize the UI
+            outsideDaysVisible: false,
+          ),
+          onDaySelected: _onDaySelected,
+          onRangeSelected: _onRangeSelected,
           onFormatChanged: (format) {
             if (_calendarFormat != format) {
-              // Call `setState()` when updating calendar format
               setState(() {
                 _calendarFormat = format;
               });
             }
           },
           onPageChanged: (focusedDay) {
-            // No need to call `setState()` here
             _focusedDay = focusedDay;
           },
         ),
+        const SizedBox(
+          height: 8.0,
+        ),
+        Expanded(
+            child: ValueListenableBuilder<List<Event>>(
+          valueListenable: _selectedEvents,
+          builder: (context, value, _) {
+            return ListView.builder(
+              itemCount: value.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 4.0,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child: ListTile(
+                    onTap: () => print('${value[index]}'),
+                    title: Text('${value[index]}'),
+                  ),
+                );
+              },
+            );
+          },
+        )),
 
         // parent streambuilder that gets user info
-        StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('users')
-              .doc(user?.uid)
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text('Loading...');
-            }
-            final data = snapshot.data!;
-            final name = data.get('Name');
-            final lastName = data.get('lastName');
-            final email = data.get('email');
-            final workoutids = data.get('workout-IDs');
-            return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (var num in workoutids)
-                    //child streambuilder that gets user workouts
-                    StreamBuilder(
-                        stream: db
-                            .collection('workouts/${num}/exercise')
-                            .snapshots(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (!snapshot.hasData) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          var docs = snapshot.data?.docs;
-                          return Column(
-                              children: docs!
-                                  .map((doc) => Text(doc.data().toString()))
-                                  .toList());
-                        }),
-                  Text(
-                    'First Name: $name',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red),
-                  ),
-                  Text(
-                    'Last Name: $lastName',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red),
-                  ),
-                  Text(
-                    'Email: $email',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red),
-                  ),
-                  Text(
-                    'Workouts: $workoutids',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red),
-                  ),
-                ]);
-          },
-        ),
+        // StreamBuilder<DocumentSnapshot>(
+        //   stream: FirebaseFirestore.instance
+        //       .collection('users')
+        //       .doc(user?.uid)
+        //       .snapshots(),
+        //   builder:
+        //       (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        //     if (snapshot.hasError) {
+        //       return Text('Error: ${snapshot.error}');
+        //     }
+        //     if (snapshot.connectionState == ConnectionState.waiting) {
+        //       return Text('Loading...');
+        //     }
+        //     final data = snapshot.data!;
+        //     final name = data.get('Name');
+        //     final lastName = data.get('lastName');
+        //     final email = data.get('email');
+        //     final workoutids = data.get('workout-IDs');
+        //     return Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           for (var num in workoutids)
+        //             //child streambuilder that gets user workouts
+        //             StreamBuilder(
+        //                 stream: db
+        //                     .collection('workouts/${num}/exercise')
+        //                     .snapshots(),
+        //                 builder: (BuildContext context,
+        //                     AsyncSnapshot<QuerySnapshot> snapshot) {
+        //                   if (!snapshot.hasData) {
+        //                     return const Center(
+        //                       child: CircularProgressIndicator(),
+        //                     );
+        //                   }
+        //                   var docs = snapshot.data?.docs;
+        //                   return Column(
+        //                       children: docs!
+        //                           .map((doc) => Text(doc.data().toString()))
+        //                           .toList());
+        //                 }),
+        //           Text(
+        //             'First Name: $name',
+        //             style: TextStyle(
+        //                 fontSize: 20,
+        //                 fontWeight: FontWeight.bold,
+        //                 color: Colors.red),
+        //           ),
+        //           Text(
+        //             'Last Name: $lastName',
+        //             style: TextStyle(
+        //                 fontSize: 20,
+        //                 fontWeight: FontWeight.bold,
+        //                 color: Colors.red),
+        //           ),
+        //           Text(
+        //             'Email: $email',
+        //             style: TextStyle(
+        //                 fontSize: 20,
+        //                 fontWeight: FontWeight.bold,
+        //                 color: Colors.red),
+        //           ),
+        //           Text(
+        //             'Workouts: $workoutids',
+        //             style: TextStyle(
+        //                 fontSize: 20,
+        //                 fontWeight: FontWeight.bold,
+        //                 color: Colors.red),
+        //           ),
+        //         ]);
+        //   },
+        // ),
         //streambuilder for workout days
-        StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('workouts')
-              .where('workoutIDs', arrayContains: user?.uid)
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            var docs = snapshot.data?.docs;
-            return Column(
-                children:
-                    docs!.map((doc) => Text(doc.data().toString())).toList());
-          },
-        ),
+        // StreamBuilder(
+        //   stream: FirebaseFirestore.instance
+        //       .collection('workouts')
+        //       .where('workoutIDs', arrayContains: user?.uid)
+        //       .snapshots(),
+        //   builder:
+        //       (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        //     if (!snapshot.hasData) {
+        //       return const Center(
+        //         child: CircularProgressIndicator(),
+        //       );
+        //     }
+        //     var docs = snapshot.data?.docs;
+        //     return Column(
+        //         children:
+        //             docs!.map((doc) => Text(doc.data().toString())).toList());
+        //   },
+        // ),
 
         Align(
             alignment: Alignment.bottomCenter,

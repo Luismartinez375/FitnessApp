@@ -20,12 +20,14 @@ class MyWidget extends StatefulWidget {
 class _MyWidgetState extends State<MyWidget> {
   final TextEditingController splitController = TextEditingController();
   final TextEditingController dayController = TextEditingController();
+  final TextEditingController dateController = TextEditingController();
 
   void makePlan() async {
     db.addWorkoutPlan(
         split: splitController.text,
         day: dayController.text,
-        workoutIDs: [user?.uid]);
+        workoutIDs: [user?.uid],
+        workoutDate: DateTime.parse("${dateController.text} 00:00:00"));
   }
 
   @override
@@ -55,9 +57,21 @@ class _MyWidgetState extends State<MyWidget> {
               hintText: 'Enter day',
             ),
           ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            child: CustomTextField(
+              controller: dateController,
+              hintText: 'Enter date of workout (yyyy-mm-dd)',
+            ),
+          ),
           ElevatedButton(
             onPressed: () {
-              if (splitController.text != "" && dayController.text != "") {
+              if (splitController.text != "" &&
+                  dayController.text != "" &&
+                  dateController != "") {
                 makePlan();
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => addWorkout()));
