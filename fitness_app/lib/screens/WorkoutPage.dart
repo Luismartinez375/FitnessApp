@@ -10,7 +10,15 @@ class WorkoutPage extends StatefulWidget {
 }
 
 class _WorkoutPageState extends State<WorkoutPage> {
-  final daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  final daysOfWeek = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -44,18 +52,32 @@ class _WorkoutPageState extends State<WorkoutPage> {
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: ExpansionTile(
+                  title: Text(
+                    day,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   children: [
-                    Text(
-                      day,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
                     if (dailyWorkouts.isNotEmpty)
                       ...dailyWorkouts.map((workout) {
-                        return ListTile(
-                          leading: Image.network(workout['imageUrl']),
-                          title: Text('${workout['sets']} sets x ${workout['reps']} reps'),
+                        final exercises = workout['exercises'] as List<dynamic>;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Workout ${dailyWorkouts.indexOf(workout) + 1}',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 8),
+                            ...exercises.map((exercise) {
+                              return ListTile(
+                                leading: Image.network(exercise['imageUrl']),
+                                title: Text(
+                                    '${exercise['name']} (${exercise['sets']} x ${exercise['reps']})'),
+                              );
+                            }).toList(),
+                            Divider(),
+                          ],
                         );
                       }).toList()
                     else
@@ -65,11 +87,13 @@ class _WorkoutPageState extends State<WorkoutPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ExerciseListScreen(dayOfWeek: day),
+                                builder: (context) =>
+                                    ExerciseListScreen(dayOfWeek: day),
                               ),
                             );
                           },
-                          child: Text('Create Workout', textAlign: TextAlign.right),
+                          child: Text('Create Workout',
+                              textAlign: TextAlign.right),
                         ),
                       ),
                   ],
@@ -88,8 +112,7 @@ Stream<QuerySnapshot> getWorkouts() {
   return FirebaseFirestore.instance
       .collection('users')
       .doc(userId)
-      .collection('workouts')
+      .collection('workoutplans')
       .orderBy('timestamp', descending: true)
       .snapshots();
 }
-
