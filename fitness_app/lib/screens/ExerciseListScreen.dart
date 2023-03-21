@@ -1,17 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../auth/firebaseAuthMethods.dart';
-
-final user = FirebaseAuthMethods(FirebaseAuth.instance).firebaseUser();
-final db = FirebaseFirestore.instance;
-Map? data;
-final docRef = db.collection('users').doc(user?.uid);
-final userDocs = docRef.get().then((DocumentSnapshot doc) {
-  final userData = doc.data() as Map<String, dynamic>;
-  data = userData;
-  // ...
-});
 
 class ExerciseListScreen extends StatefulWidget {
   final String dayOfWeek;
@@ -23,6 +12,8 @@ class ExerciseListScreen extends StatefulWidget {
 }
 
 class _ExerciseListScreenState extends State<ExerciseListScreen> {
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
   final categories = {
     'Chest': 'assets/chest.png',
     'Back': 'assets/back.png',
@@ -145,7 +136,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     ],
   };
 
-  Future<void> _showExerciseDialog(String imageUrl, String exerciseName) async {
+  Future<void> _showExerciseDialog(String imageUrl, String exerciseName, String category) async {
     int sets = 1;
     int reps = 1;
 
@@ -269,7 +260,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    await _saveExercise(imageUrl, exerciseName, sets, reps);
+                    await _saveExercise(imageUrl, exerciseName, _selectedCategory! ,sets, reps);
                     Navigator.pop(context);
                   },
                   child: Text('Save'),
@@ -282,8 +273,10 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     );
   }
 
+
+
   Future<void> _saveExercise(
-      String imageUrl, String exerciseName, int sets, int reps) async {
+       String imageUrl, String exerciseName, String category, int sets, int reps) async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
     // Get the reference to the user's workouts collection
@@ -309,11 +302,23 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
       // Check if the exercise with the same name already exists
       for (int i = 0; i < exercises.length; i++) {
         if (exercises[i]['name'] == exerciseName) {
+          exerciseFound = true;
+
+          
+
           // Update the exercise with the same name
           exercises[i]['imageUrl'] = imageUrl;
+          exercises[i]['category'] = category;
           exercises[i]['sets'] = sets;
           exercises[i]['reps'] = reps;
-          exerciseFound = true;
+          
+
+          _scaffoldMessengerKey.currentState!.showSnackBar(
+            SnackBar(
+              content: Text('The exercise already exists!'),
+              duration: Duration(seconds: 2),
+            ),
+          );
           break;
         }
       }
@@ -323,6 +328,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
         exercises.add({
           'imageUrl': imageUrl,
           'name': exerciseName,
+          'category': category,
           'sets': sets,
           'reps': reps,
         });
@@ -421,7 +427,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
             setState(() {
               _selectedExerciseIndex = index;
             });
-            _showExerciseDialog(imageUrl, name);
+            _showExerciseDialog(imageUrl, name, _selectedCategory!);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -441,53 +447,56 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${widget.dayOfWeek} - Exercises'),
-      ),
-      body: Column(
-        children: [
-          SizedBox(height: 8),
-          Container(
-            height: 50,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: categories.length,
-              itemBuilder: (BuildContext context, int index) {
-                final category = categories.keys.elementAt(index);
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedCategory = category;
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      category,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: _selectedCategory == category
-                            ? Colors.blue
-                            : Colors.black,
+    return ScaffoldMessenger(
+      key: _scaffoldMessengerKey,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('${widget.dayOfWeek} - Exercises'),
+        ),
+        body: Column(
+          children: [
+            SizedBox(height: 8),
+            Container(
+              height: 50,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: categories.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final category = categories.keys.elementAt(index);
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedCategory = category;
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        category,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: _selectedCategory == category
+                              ? Colors.blue
+                              : Colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-          SizedBox(height: 8),
-          Expanded(
-            child: AnimatedSwitcher(
-              duration: Duration(milliseconds: 300),
-              child: _selectedCategory == null
-                  ? Center(child: Text('Select a category'))
-                  : _buildExercisesGrid(),
+            SizedBox(height: 8),
+            Expanded(
+              child: AnimatedSwitcher(
+                duration: Duration(milliseconds: 300),
+                child: _selectedCategory == null
+                    ? Center(child: Text('Select a category'))
+                    : _buildExercisesGrid(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

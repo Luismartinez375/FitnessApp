@@ -4,6 +4,7 @@ import 'package:fitness_app/screens/homeScreen.dart';
 import 'package:fitness_app/screens/landingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../screens/loginScreen.dart';
 import '../widgets/snackBar.dart';
 import '../models/User.dart';
 import '../models/workout.dart';
@@ -52,23 +53,33 @@ class FirebaseAuthMethods {
     await docRef.set(cUser);
   }
 
+  Future<void> logout() async { //logout
+  await _auth.signOut();
+}
+
   //Email login
-  Future<void> loginWithEmail({
-    required String email,
-    required String password,
-    required BuildContext context,
-  }) async {
-    try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Landing()));
-      if (!_auth.currentUser!.emailVerified) {
-        await sendEmailVerification(context);
-      }
-    } on FirebaseAuthException catch (e) {
-      showSnackBar(context, e.message!);
+Future<void> loginWithEmail({
+  required String email,
+  required String password,
+  required BuildContext context,
+}) async {
+  try {
+    await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+    if (!_auth.currentUser!.emailVerified) {
+      await sendEmailVerification(context);
+    } else {
+      // Use Navigator.pushNamedAndRemoveUntil to navigate to the landing page and empty the navigator stack
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        Landing.routeName,
+        (Route<dynamic> route) => false, // This condition will remove all previous routes from the stack
+      );
     }
+  } on FirebaseAuthException catch (e) {
+    showSnackBar(context, e.message!);
   }
+}
 
   //Google sign in
   Future<void> signInWithGoogle(BuildContext context) async {
@@ -162,6 +173,9 @@ class Database {
 
     await docRef.set(curWorkout);
   }
+
+
+ 
 
 // Future<void> printWorkouts(String workoutID) async {
 //   final docRef = FirebaseFirestore.instance

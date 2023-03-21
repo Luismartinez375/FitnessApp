@@ -22,35 +22,34 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
               borderRadius: BorderRadius.circular(20),
             ),
           ),
+          side: MaterialStateProperty.all(BorderSide(color: Colors.black12)),
+          textStyle: MaterialStateProperty.all(TextStyle(color: Colors.black54)),
+          padding: MaterialStateProperty.all(EdgeInsets.all(10)),
         ),
         onPressed: () {
           FirebaseAuthMethods(FirebaseAuth.instance).signInWithGoogle(context);
           // Navigator.push(
           //     context, MaterialPageRoute(builder: (context) => HomePage()));
         },
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image(
-                image: AssetImage("assets/google_logo1600.png"),
-                height: 35.0,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Text(
-                  'Sign in with Google',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w600,
-                  ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image(
+              image: AssetImage("assets/google_logo1600.png"),
+              height: 35.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                'Sign in with Google',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );
