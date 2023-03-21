@@ -10,14 +10,19 @@ class WorkoutPage extends StatefulWidget {
 }
 
 class _WorkoutPageState extends State<WorkoutPage> {
-  final daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  final daysOfWeek = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Workout'),
-      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: getWorkouts(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -49,13 +54,15 @@ class _WorkoutPageState extends State<WorkoutPage> {
                   children: [
                     Text(
                       day,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     if (dailyWorkouts.isNotEmpty)
                       ...dailyWorkouts.map((workout) {
                         return ListTile(
                           leading: Image.network(workout['imageUrl']),
-                          title: Text('${workout['sets']} sets x ${workout['reps']} reps'),
+                          title: Text(
+                              '${workout['sets']} sets x ${workout['reps']} reps'),
                         );
                       }).toList()
                     else
@@ -65,11 +72,13 @@ class _WorkoutPageState extends State<WorkoutPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ExerciseListScreen(dayOfWeek: day),
+                                builder: (context) =>
+                                    ExerciseListScreen(dayOfWeek: day),
                               ),
                             );
                           },
-                          child: Text('Create Workout', textAlign: TextAlign.right),
+                          child: Text('Create Workout',
+                              textAlign: TextAlign.right),
                         ),
                       ),
                   ],
@@ -92,4 +101,3 @@ Stream<QuerySnapshot> getWorkouts() {
       .orderBy('timestamp', descending: true)
       .snapshots();
 }
-

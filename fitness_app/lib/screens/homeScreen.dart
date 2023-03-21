@@ -45,13 +45,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(children: [
-        AppBar(
-          title: const Text(
-            "HomeScreen",
-          ),
-        ),
-
-        //Stream builder to get user info
+        // parent streambuilder that gets user info
         StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance
               .collection('users')
@@ -73,6 +67,25 @@ class _HomePageState extends State<HomePage> {
             return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  for (var num in workoutids)
+                    //child streambuilder that gets user workouts
+                    StreamBuilder(
+                        stream: db
+                            .collection('workouts/${num}/exercise')
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (!snapshot.hasData) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          var docs = snapshot.data?.docs;
+                          return Column(
+                              children: docs!
+                                  .map((doc) => Text(doc.data().toString()))
+                                  .toList());
+                        }),
                   Text(
                     'First Name: $name',
                     style: TextStyle(
@@ -101,47 +114,6 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.bold,
                         color: Colors.red),
                   ),
-                ]);
-          },
-        ),
-
-        // streambuilder to get workouts
-        StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('users')
-              .doc(user?.uid)
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text('Loading...');
-            }
-            final data = snapshot.data!;
-            final workoutids = data.get('workout-IDs');
-            return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (var num in workoutids)
-                    StreamBuilder(
-                        stream: db
-                            .collection('workouts/${num}/exercise')
-                            .snapshots(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (!snapshot.hasData) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          var docs = snapshot.data?.docs;
-                          return Column(
-                              children: docs!
-                                  .map((doc) => Text(doc.data().toString()))
-                                  .toList());
-                        })
                 ]);
           },
         ),
