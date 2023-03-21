@@ -53,33 +53,35 @@ class FirebaseAuthMethods {
     await docRef.set(cUser);
   }
 
-  Future<void> logout() async { //logout
-  await _auth.signOut();
-}
+  Future<void> logout() async {
+    //logout
+    await _auth.signOut();
+  }
 
   //Email login
-Future<void> loginWithEmail({
-  required String email,
-  required String password,
-  required BuildContext context,
-}) async {
-  try {
-    await _auth.signInWithEmailAndPassword(email: email, password: password);
+  Future<void> loginWithEmail({
+    required String email,
+    required String password,
+    required BuildContext context,
+  }) async {
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
 
-    if (!_auth.currentUser!.emailVerified) {
-      await sendEmailVerification(context);
-    } else {
-      // Use Navigator.pushNamedAndRemoveUntil to navigate to the landing page and empty the navigator stack
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        Landing.routeName,
-        (Route<dynamic> route) => false, // This condition will remove all previous routes from the stack
-      );
+      if (!_auth.currentUser!.emailVerified) {
+        await sendEmailVerification(context);
+      } else {
+        // Use Navigator.pushNamedAndRemoveUntil to navigate to the landing page and empty the navigator stack
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Landing.routeName,
+          (Route<dynamic> route) =>
+              false, // This condition will remove all previous routes from the stack
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      showSnackBar(context, e.message!);
     }
-  } on FirebaseAuthException catch (e) {
-    showSnackBar(context, e.message!);
   }
-}
 
   //Google sign in
   Future<void> signInWithGoogle(BuildContext context) async {
@@ -173,28 +175,4 @@ class Database {
 
     await docRef.set(curWorkout);
   }
-
-
- 
-
-// Future<void> printWorkouts(String workoutID) async {
-//   final docRef = FirebaseFirestore.instance
-//       .collection('workouts')
-//       .doc(workoutID)
-//       .collection('workouts');
-
-//   final querySnapshot = await docRef.get();
-//   if (querySnapshot.docs.isNotEmpty) {
-//     final workouts = querySnapshot.docs.map((doc) => Workout.fromFirestore(doc, )).toList();
-//     workouts.forEach((workout) {
-//       print('Name: ${workout.name}');
-//       print('Sets: ${workout.sets}');
-//       print('Reps: ${workout.reps}');
-//       print('Weight: ${workout.weight}');
-//       print('------------------');
-//     });
-//   } else {
-//     print('No workouts found.');
-//   }
-// }
 }
