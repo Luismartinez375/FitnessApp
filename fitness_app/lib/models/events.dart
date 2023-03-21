@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../screens/homeScreen.dart';
 
@@ -40,6 +41,10 @@ final kEvents = LinkedHashMap<DateTime, List<Event>>(
 )..addAll(_kEventSource);
 
 Map<DateTime, List<Event>> _kEventSource = {};
+
+// Stream<List<Event>> getEventStream(DateTime dateTime) async*{
+//   yield* db.collection('users').doc(user?.uid).snapshots().map((event) => event.)
+// }
 
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;

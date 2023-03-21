@@ -28,7 +28,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   get description => null;
-  int _selectedIndex = 0;
+
   late final ValueNotifier<List<Event>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
@@ -42,12 +42,6 @@ class _HomePageState extends State<HomePage> {
     Text('Search'),
     Text('Profile'),
   ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   void dispose() {
     _selectedEvents.dispose();
@@ -109,64 +103,69 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(children: [
-        TableCalendar(
-          firstDay: kFirstDay,
-          lastDay: kLastDay,
-          focusedDay: _focusedDay,
-          selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-          rangeStartDay: _rangeStart,
-          rangeEndDay: _rangeEnd,
-          calendarFormat: _calendarFormat,
-          rangeSelectionMode: _rangeSelectionMode,
-          eventLoader: _getEventsForDay,
-          startingDayOfWeek: StartingDayOfWeek.monday,
-          calendarStyle: CalendarStyle(
-            // Use `CalendarStyle` to customize the UI
-            outsideDaysVisible: false,
-          ),
-          onDaySelected: _onDaySelected,
-          onRangeSelected: _onRangeSelected,
-          onFormatChanged: (format) {
-            if (_calendarFormat != format) {
-              setState(() {
-                _calendarFormat = format;
-              });
-            }
-          },
-          onPageChanged: (focusedDay) {
-            _focusedDay = focusedDay;
-          },
-        ),
-        const SizedBox(
-          height: 8.0,
-        ),
-        Expanded(
-            child: ValueListenableBuilder<List<Event>>(
-          valueListenable: _selectedEvents,
-          builder: (context, value, _) {
-            return ListView.builder(
-              itemCount: value.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 4.0,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child: ListTile(
-                    onTap: () => print('${value[index]}'),
-                    title: Text('${value[index]}'),
-                  ),
-                );
-              },
-            );
-          },
-        )),
+    return Scaffold();
+  }
+}
+
+
+ // return Scaffold(
+    //   body: Column(children: [
+    //     TableCalendar(
+    //       firstDay: kFirstDay,
+    //       lastDay: kLastDay,
+    //       focusedDay: _focusedDay,
+    //       selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+    //       rangeStartDay: _rangeStart,
+    //       rangeEndDay: _rangeEnd,
+    //       calendarFormat: _calendarFormat,
+    //       rangeSelectionMode: _rangeSelectionMode,
+    //       eventLoader: _getEventsForDay,
+    //       startingDayOfWeek: StartingDayOfWeek.monday,
+    //       calendarStyle: CalendarStyle(
+    //         // Use `CalendarStyle` to customize the UI
+    //         outsideDaysVisible: false,
+    //       ),
+    //       onDaySelected: _onDaySelected,
+    //       onRangeSelected: _onRangeSelected,
+    //       onFormatChanged: (format) {
+    //         if (_calendarFormat != format) {
+    //           setState(() {
+    //             _calendarFormat = format;
+    //           });
+    //         }
+    //       },
+    //       onPageChanged: (focusedDay) {
+    //         _focusedDay = focusedDay;
+    //       },
+    //     ),
+    //     const SizedBox(
+    //       height: 8.0,
+    //     ),
+    //     Expanded(
+    //         child: ValueListenableBuilder<List<Event>>(
+    //       valueListenable: _selectedEvents,
+    //       builder: (context, value, _) {
+    //         return ListView.builder(
+    //           itemCount: value.length,
+    //           itemBuilder: (context, index) {
+    //             return Container(
+    //               margin: const EdgeInsets.symmetric(
+    //                 horizontal: 12.0,
+    //                 vertical: 4.0,
+    //               ),
+    //               decoration: BoxDecoration(
+    //                 border: Border.all(),
+    //                 borderRadius: BorderRadius.circular(12.0),
+    //               ),
+    //               child: ListTile(
+    //                 onTap: () => print('${value[index]}'),
+    //                 title: Text('${value[index]}'),
+    //               ),
+    //             );
+    //           },
+    //         );
+    //       },
+    //     )),
 
         // parent streambuilder that gets user info
         // StreamBuilder<DocumentSnapshot>(
@@ -260,18 +259,16 @@ class _HomePageState extends State<HomePage> {
         //   },
         // ),
 
-        Align(
-            alignment: Alignment.bottomCenter,
-            child: FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MyWidget()));
-                });
-              },
-              child: Icon(Icons.add),
-            )),
-      ]),
-    );
-  }
-}
+    //     Align(
+    //         alignment: Alignment.bottomCenter,
+    //         child: FloatingActionButton(
+    //           onPressed: () {
+    //             setState(() {
+    //               Navigator.push(context,
+    //                   MaterialPageRoute(builder: (context) => MyWidget()));
+    //             });
+    //           },
+    //           child: Icon(Icons.add),
+    //         )),
+    //   ]),
+    // );
