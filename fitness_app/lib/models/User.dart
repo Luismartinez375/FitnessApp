@@ -19,8 +19,8 @@ class curUser {
       email: data?['email'],
       lastName: data?['lastName'],
       userName: data?['userName'],
-      workoutIDs: data?['workoutIDs'] is Iterable
-          ? List.from(data?['workoutIDs'])
+      workoutIDs: data?['workout-IDs'] is Iterable
+          ? List.from(data?['workout-IDs'])
           : null,
     );
   }
