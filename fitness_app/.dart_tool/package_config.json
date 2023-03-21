@@ -140,8 +140,14 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "google_identity_services_web",
+      "rootUri": "file:///C:/Users/LuisL/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "google_sign_in",
-      "rootUri": "file:///C:/Users/LuisL/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in-5.4.4",
+      "rootUri": "file:///C:/Users/LuisL/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in-6.0.2",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
@@ -165,9 +171,15 @@
     },
     {
       "name": "google_sign_in_web",
-      "rootUri": "file:///C:/Users/LuisL/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_web-0.10.2+1",
+      "rootUri": "file:///C:/Users/LuisL/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_web-0.11.0+2",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "http",
+      "rootUri": "file:///C:/Users/LuisL/AppData/Local/Pub/Cache/hosted/pub.dev/http-0.13.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
     },
     {
       "name": "http_parser",
@@ -362,7 +374,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-03-20T18:18:24.853846Z",
+  "generated": "2023-03-21T04:26:31.366058Z",
   "generator": "pub",
   "generatorVersion": "2.19.4"
 }

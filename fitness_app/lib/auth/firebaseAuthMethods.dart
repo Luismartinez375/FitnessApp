@@ -92,6 +92,20 @@ class FirebaseAuthMethods {
             ///if user signs in through google
             ///and is new user
             ///functions to do stuff witht that new user such as add info to firestore database
+            final cUser = curUser(
+                name: userCredential.user?.displayName,
+                email: userCredential.user?.email,
+                lastName: '',
+                userName: userCredential.user?.displayName,
+                workoutIDs: []);
+            final docRef = db
+                .collection('users')
+                .withConverter(
+                  fromFirestore: curUser.fromFirestore,
+                  toFirestore: (curUser user, options) => user.toFirestore(),
+                )
+                .doc(_auth.currentUser?.uid.toString());
+            await docRef.set(cUser);
           }
         }
       }
