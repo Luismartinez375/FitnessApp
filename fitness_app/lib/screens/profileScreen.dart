@@ -17,6 +17,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
+        automaticallyImplyLeading: false,
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: FirebaseFirestore.instance
@@ -33,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return Center(child: Text('Something went wrong'));
           }
 
-          final userData = snapshot.data!.data() as Map<String, dynamic>;
+          final userData = snapshot.data?.data() as Map<String, dynamic>;
           String height =
               "${userData['heightft']}'${userData['heightinch']}\"ft";
 

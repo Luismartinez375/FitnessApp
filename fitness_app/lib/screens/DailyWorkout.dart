@@ -39,6 +39,7 @@ class _DailyWorkoutState extends State<DailyWorkout> {
           style: TextStyle(fontFamily: 'Stronger', fontSize: 100.0),
         ),
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: getDailyWorkouts(),
@@ -52,8 +53,7 @@ class _DailyWorkoutState extends State<DailyWorkout> {
           return ListView.builder(
             itemCount: workouts.length,
             itemBuilder: (BuildContext context, int index) {
-              final exercises =
-                  workouts[index]['exercises'] as List<dynamic>;
+              final exercises = workouts[index]['exercises'] as List<dynamic>;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

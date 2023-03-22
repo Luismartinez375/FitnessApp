@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_app/screens/homeScreen.dart';
@@ -69,9 +71,13 @@ class FirebaseAuthMethods {
 
       if (!_auth.currentUser!.emailVerified) {
         await sendEmailVerification(context);
-      } else {
-        // Use Navigator.pushNamedAndRemoveUntil to navigate to the landing page and empty the navigator stack
       }
+      FirebaseAuth.instance.authStateChanges().listen((User? cuser) {
+        if (cuser != null) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const Landing()));
+        }
+      });
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!);
     }

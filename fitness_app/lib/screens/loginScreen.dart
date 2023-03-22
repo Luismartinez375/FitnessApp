@@ -137,12 +137,15 @@ class _LogInState extends State<LogIn> {
                     ElevatedButton(
                       onPressed: () {
                         loginUser();
-                        if (FirebaseAuth.instance.currentUser != null)
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Landing(),
-                              ));
+                        FirebaseAuth.instance
+                            .authStateChanges()
+                            .listen((User? user) {
+                          if (user == null) {
+                            print('User is currently signed out!');
+                          } else {
+                            print('User is signed in!');
+                          }
+                        });
                       },
                       style: ButtonStyle(
                         backgroundColor:

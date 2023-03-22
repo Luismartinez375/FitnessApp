@@ -449,6 +449,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('${widget.dayOfWeek} - Exercises'),
+          automaticallyImplyLeading: false,
         ),
         body: Column(
           children: [

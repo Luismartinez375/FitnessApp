@@ -25,6 +25,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Workout'),
+        automaticallyImplyLeading: false,
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: getWorkouts(),
