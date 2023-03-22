@@ -136,7 +136,8 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     ],
   };
 
-  Future<void> _showExerciseDialog(String imageUrl, String exerciseName, String category) async {
+  Future<void> _showExerciseDialog(
+      String imageUrl, String exerciseName, String category) async {
     int sets = 1;
     int reps = 1;
 
@@ -260,7 +261,8 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    await _saveExercise(imageUrl, exerciseName, _selectedCategory! ,sets, reps);
+                    await _saveExercise(
+                        imageUrl, exerciseName, _selectedCategory!, sets, reps);
                     Navigator.pop(context);
                   },
                   child: Text('Save'),
@@ -273,10 +275,8 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     );
   }
 
-
-
-  Future<void> _saveExercise(
-       String imageUrl, String exerciseName, String category, int sets, int reps) async {
+  Future<void> _saveExercise(String imageUrl, String exerciseName,
+      String category, int sets, int reps) async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
     // Get the reference to the user's workouts collection
@@ -304,14 +304,11 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
         if (exercises[i]['name'] == exerciseName) {
           exerciseFound = true;
 
-          
-
           // Update the exercise with the same name
           exercises[i]['imageUrl'] = imageUrl;
           exercises[i]['category'] = category;
           exercises[i]['sets'] = sets;
           exercises[i]['reps'] = reps;
-          
 
           _scaffoldMessengerKey.currentState!.showSnackBar(
             SnackBar(

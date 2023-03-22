@@ -71,12 +71,6 @@ class FirebaseAuthMethods {
         await sendEmailVerification(context);
       } else {
         // Use Navigator.pushNamedAndRemoveUntil to navigate to the landing page and empty the navigator stack
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          Landing.routeName,
-          (Route<dynamic> route) =>
-              false, // This condition will remove all previous routes from the stack
-        );
       }
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!);
@@ -105,20 +99,6 @@ class FirebaseAuthMethods {
             ///if user signs in through google
             ///and is new user
             ///functions to do stuff witht that new user such as add info to firestore database
-            final cUser = curUser(
-                name: userCredential.user?.displayName,
-                email: userCredential.user?.email,
-                lastName: '',
-                userName: userCredential.user?.displayName,
-                workoutIDs: []);
-            final docRef = db
-                .collection('users')
-                .withConverter(
-                  fromFirestore: curUser.fromFirestore,
-                  toFirestore: (curUser user, options) => user.toFirestore(),
-                )
-                .doc(_auth.currentUser?.uid.toString());
-            await docRef.set(cUser);
           }
         }
       }
@@ -139,19 +119,20 @@ class FirebaseAuthMethods {
 }
 
 class Database {
+  String? workoutID;
+
   final db = FirebaseFirestore.instance;
 
   Future<void> addWorkoutPlan({
     required String split,
     required String day,
     required List<String?>? workoutIDs,
-    required DateTime? workoutDate,
   }) async {
     final curPlan = WorkoutPlan(
-        split: split,
-        day: day,
-        workoutIDs: workoutIDs,
-        workoutDate: workoutDate);
+      split: split,
+      day: day,
+      workoutIDs: workoutIDs,
+    );
     final docRef = db
         .collection('workouts')
         .withConverter(
@@ -161,16 +142,7 @@ class Database {
         )
         .doc();
     await docRef.set(curPlan);
-    final data = {'curWorkout': docRef.id};
-    final addID = db
-        .collection('users')
-        .doc(user?.uid)
-        .set(data, SetOptions(merge: true));
-    await addID;
-    final addIDList = db.collection('users').doc(user?.uid);
-    addIDList.update({
-      'workout-IDs': FieldValue.arrayUnion([docRef.id.toString()])
-    });
+    workoutID = docRef.id.toString();
   }
 
   Future<void> addWorkout({

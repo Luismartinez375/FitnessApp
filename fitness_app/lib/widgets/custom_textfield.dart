@@ -12,7 +12,7 @@ class CustomTextField extends StatelessWidget {
     this.isPassword = false,
   }) : super(key: key);
 
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
