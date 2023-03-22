@@ -26,8 +26,7 @@ class _MyWidgetState extends State<MyWidget> {
     db.addWorkoutPlan(
         split: splitController.text,
         day: dayController.text,
-        workoutIDs: [user?.uid],
-        workoutDate: DateTime.parse("${dateController.text} 00:00:00"));
+        workoutIDs: [user?.uid]);
   }
 
   @override

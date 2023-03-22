@@ -81,7 +81,6 @@ class _LogInState extends State<LogIn> {
         });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -138,6 +137,12 @@ class _LogInState extends State<LogIn> {
                     ElevatedButton(
                       onPressed: () {
                         loginUser();
+                        if (FirebaseAuth.instance.currentUser != null)
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Landing(),
+                              ));
                       },
                       style: ButtonStyle(
                         backgroundColor:
@@ -200,7 +205,7 @@ class _LogInState extends State<LogIn> {
                     SizedBox(height: 1),
                     TextButton(
                       onPressed: () {
-                         _forgotPassword(context);
+                        _forgotPassword(context);
                       },
                       child: Text(
                         "Forgot password?",

@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
-    @override
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'FitnessApp',
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity),
       initialRoute: '/',
       routes: {
-        '/': (context) => LogIn(),
+        '/': (context) => const LogIn(),
         Landing.routeName: (context) => Landing(),
         // Add other named routes here
       },
