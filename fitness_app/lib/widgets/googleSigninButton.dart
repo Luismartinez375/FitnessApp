@@ -23,7 +23,8 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             ),
           ),
           side: MaterialStateProperty.all(BorderSide(color: Colors.black12)),
-          textStyle: MaterialStateProperty.all(TextStyle(color: Colors.black54)),
+          textStyle:
+              MaterialStateProperty.all(TextStyle(color: Colors.black54)),
           padding: MaterialStateProperty.all(EdgeInsets.all(10)),
         ),
         onPressed: () {
