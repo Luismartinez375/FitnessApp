@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_app/screens/homeScreen.dart';
 import 'package:fitness_app/screens/landingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../screens/loginScreen.dart';
 import '../widgets/snackBar.dart';
 import '../models/User.dart';
 import '../models/workout.dart';
@@ -19,39 +17,42 @@ class FirebaseAuthMethods {
     return _auth.currentUser;
   }
 
-  //Email sign up
-  Future<void> signUpWithEmail({
-    required String email,
-    required String password,
-    required String name,
-    required String lastName,
-    required String userName,
-    required BuildContext context,
-  }) async {
-    try {
-      await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      await sendEmailVerification(
-        context,
-      );
-    } on FirebaseAuthException catch (e) {
-      showSnackBar(context, e.message!);
-    }
-    final cUser = curUser(
-        name: name,
-        email: email,
-        lastName: lastName,
-        userName: userName,
-        workoutIDs: []);
-    final docRef = db
-        .collection('users')
-        .withConverter(
-          fromFirestore: curUser.fromFirestore,
-          toFirestore: (curUser user, options) => user.toFirestore(),
-        )
-        .doc(_auth.currentUser?.uid.toString());
-    await docRef.set(cUser);
+ 
+//Email sign up
+Future<void> signUpWithEmail({
+  required String email,
+  required String password,
+  required String name,
+  required String lastName,
+  required String userName,
+  required String gender,
+  required DateTime dateOfBirth,
+}) async {
+  try {
+    await _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
+    await _auth.currentUser!.sendEmailVerification();
+  } on FirebaseAuthException catch (e) {
+    print(e.message!); // Handle the error message according to your needs
   }
+  final cUser = curUser(
+    name: name,
+    email: email,
+    lastName: lastName,
+    userName: userName,
+    gender: gender,
+    dateOfBirth: dateOfBirth,
+    workoutIDs: [],
+  );
+  final docRef = db
+      .collection('users')
+      .withConverter(
+        fromFirestore: curUser.fromFirestore,
+        toFirestore: (curUser user, options) => user.toFirestore(),
+      )
+      .doc(_auth.currentUser?.uid.toString());
+  await docRef.set(cUser);
+}
 
   Future<void> logout() async { //logout
   await _auth.signOut();
@@ -110,6 +111,34 @@ Future<void> loginWithEmail({
       showSnackBar(context, e.message!);
     }
   }
+
+
+//Verify if username exists
+ Future<bool> isUsernameTaken(String username) async { 
+    final result = await FirebaseFirestore.instance
+        .collection('users')
+        .where('userName', isEqualTo: username)
+        .get();
+    return result.docs.isNotEmpty;
+  }
+
+  //verify if email exist
+ Future<bool> isEmailRegistered(String email) async {
+  try {
+    // Fetch the signInMethods associated with the provided email
+    List<String> signInMethods = await _auth.fetchSignInMethodsForEmail(email);
+
+    // If the signInMethods list is empty, the email is not registered
+    return signInMethods.isNotEmpty;
+  } catch (e) {
+    if (e is FirebaseAuthException && e.code == 'user-not-found') {
+      return false;
+    } else {
+      throw e;
+    }
+  }
+}
+
 
   //Email verification
   Future<void> sendEmailVerification(BuildContext context) async {
@@ -175,26 +204,4 @@ class Database {
   }
 
 
- 
-
-// Future<void> printWorkouts(String workoutID) async {
-//   final docRef = FirebaseFirestore.instance
-//       .collection('workouts')
-//       .doc(workoutID)
-//       .collection('workouts');
-
-//   final querySnapshot = await docRef.get();
-//   if (querySnapshot.docs.isNotEmpty) {
-//     final workouts = querySnapshot.docs.map((doc) => Workout.fromFirestore(doc, )).toList();
-//     workouts.forEach((workout) {
-//       print('Name: ${workout.name}');
-//       print('Sets: ${workout.sets}');
-//       print('Reps: ${workout.reps}');
-//       print('Weight: ${workout.weight}');
-//       print('------------------');
-//     });
-//   } else {
-//     print('No workouts found.');
-//   }
-// }
 }

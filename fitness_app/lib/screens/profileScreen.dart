@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
+  
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -12,8 +13,10 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final _auth = FirebaseAuth.instance;
 
+
 @override
 Widget build(BuildContext context) {
+   
   return Scaffold(
     appBar: AppBar(
       title: Text('Profile'),
@@ -34,6 +37,7 @@ Widget build(BuildContext context) {
         }
 
         final userData = snapshot.data!.data() as Map<String, dynamic>;
+        int age = calculateAge(userData['dateOfBirth'].toDate());
         String height = "${userData['heightft']}'${userData['heightinch']}\"ft";
 
         return SingleChildScrollView(
@@ -57,9 +61,10 @@ Widget build(BuildContext context) {
                       ),
                     ),
                     Expanded(
+                      
                       child: Column(
                         children: [
-                          smallCard('Age', '${userData['age']}'),
+                          smallCard('Age', '$age'),
                           smallCard('Gender', '${userData['gender']}'),
                         ],
                       ),
@@ -130,6 +135,25 @@ Widget build(BuildContext context) {
     ),
   );
 }
+
+int calculateAge(DateTime dateOfBirth) {
+  final currentDate = DateTime.now();
+  int age = currentDate.year - dateOfBirth.year;
+  int month1 = currentDate.month;
+  int month2 = dateOfBirth.month;
+
+  if (month2 > month1) {
+    age--;
+  } else if (month1 == month2) {
+    final day1 = currentDate.day;
+    final day2 = dateOfBirth.day;
+    if (day2 > day1) {
+      age--;
+    }
+  }
+  return age;
+}
+
 
 Widget smallCard(String title, String value) {
   return Card(

@@ -4,15 +4,17 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final bool isPassword;
+  final TextCapitalization textCapitalization;
 
   const CustomTextField({
     Key? key,
     required this.controller,
     required this.hintText,
+    this.textCapitalization = TextCapitalization.none,
     this.isPassword = false,
   }) : super(key: key);
 
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
@@ -30,6 +32,7 @@ Widget build(BuildContext context) {
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(vertical: 15),
         ),
+        textCapitalization: textCapitalization,
       ),
     );
   }
