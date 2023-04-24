@@ -25,7 +25,7 @@ void scheduleDailyNotification() {
   const NotificationDetails platformChannelSpecifics =
       NotificationDetails(android: androidPlatformChannelSpecifics);
   final DateTime now = DateTime.now();
-  final DateTime scheduledDate = DateTime(now.year, now.month, now.day, 8,);
+  final DateTime scheduledDate = DateTime(now.year, now.month, now.day, 2,);
 
   if (scheduledDate.isBefore(now)) {
     // Schedule notification for the next day if the current time is past 10 AM

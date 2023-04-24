@@ -19,8 +19,19 @@ class curUser {
   int thigh = 0;
   int waist = 0;
   double bmi = 0.0;
-  double body_fat = 0.0;
+  double bodyFat = 0.0;
+  int profilePicture = 1;
   List<String>? workoutIDs;
+  Map<String, int> dailyNotificationTimes = {
+    'monday': 0,
+    'tuesday': 0,
+    'wednesday': 0,
+    'thursday': 0,
+    'friday': 0,
+    'saturday': 0,
+    'sunday': 0,
+  };
+
 
   curUser({
     this.name,
@@ -38,9 +49,9 @@ class curUser {
 
       // Calculate body fat percentage using the U.S. Navy method as an example
       if (gender == 'male') {
-        body_fat = 86.010 * (Math.log(waist - neck) / Math.log(10)) - 70.041 * (Math.log(heightInInches) / Math.log(10)) + 36.76;
+        bodyFat = 86.010 * (Math.log(waist - neck) / Math.log(10)) - 70.041 * (Math.log(heightInInches) / Math.log(10)) + 36.76;
       } else if (gender == 'female') {
-        body_fat = 163.205 * (Math.log(waist + hip - neck) / Math.log(10)) - 97.684 * (Math.log(heightInInches) / Math.log(10)) - 78.387;
+        bodyFat = 163.205 * (Math.log(waist + hip - neck) / Math.log(10)) - 97.684 * (Math.log(heightInInches) / Math.log(10)) - 78.387;
       }
     }
   }
@@ -81,7 +92,7 @@ class curUser {
       "thigh": thigh,
       "waist": waist,
       "bmi": bmi,
-      "body_fat": body_fat,
+      "bodyFat": bodyFat,
       if (workoutIDs != null) "workoutIDs": workoutIDs,
     };
   }
