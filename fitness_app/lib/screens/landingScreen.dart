@@ -7,6 +7,7 @@ import 'package:fitness_app/widgets/googleSigninButton.dart';
 import 'package:fitness_app/widgets/snackBar.dart';
 import 'package:flutter/material.dart';
 import '../widgets/custom_textfield.dart';
+import 'leaderboard.dart';
 import 'loginScreen.dart';
 import 'registerScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,6 +27,7 @@ class _LandingState extends State<Landing> {
   final List<Widget> _screens = [
     DailyWorkout(),
     WorkoutPage(),
+    Leaderboard(),
     ProfileScreen(),
   ];
 
@@ -82,9 +84,11 @@ class _LandingState extends State<Landing> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
+        
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.fitness_center), label: 'Workout'),
+          BottomNavigationBarItem(icon: Icon(Icons.leaderboard), label: 'Leaderboards'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
