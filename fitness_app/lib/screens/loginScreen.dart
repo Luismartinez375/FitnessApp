@@ -103,14 +103,28 @@ class _LogInState extends State<LogIn> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SizedBox(
-                          height: 20,
+                          height: 150,
                         ),
-                        Flexible(
-                            flex: 1,
-                            child: CircleAvatar(
-                              backgroundImage: AssetImage('assets/gymrat.png'),
-                              radius: 150.0,
-                            ))
+                        Column(
+                          children: [
+                            Text(
+                              "GYMRAT",
+                              style: TextStyle(
+                                fontFamily: 'Stronger',
+                                fontSize: 120,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              "Your fitness journey starts here!",
+                              style: TextStyle(
+                                fontFamily: 'Stronger',
+                                fontSize: 35,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.08),
@@ -118,7 +132,7 @@ class _LogInState extends State<LogIn> {
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       child: CustomTextField(
                         controller: emailController,
-                        hintText: 'Enter your email',
+                        hintText: 'Enter your email', 
                       ),
                     ),
                     const SizedBox(
@@ -133,7 +147,7 @@ class _LogInState extends State<LogIn> {
                       ),
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 30,
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -141,7 +155,7 @@ class _LogInState extends State<LogIn> {
                       },
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all(Colors.amber),
+                            MaterialStateProperty.all(Colors.red),
                         textStyle: MaterialStateProperty.all(
                           TextStyle(color: Colors.white),
                         ),
@@ -157,13 +171,13 @@ class _LogInState extends State<LogIn> {
                       child: Text(
                         'Login',
                         style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 16),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
+                      padding: const EdgeInsets.only(top: 50.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -179,7 +193,7 @@ class _LogInState extends State<LogIn> {
                               "Register here!",
                               style: TextStyle(
                                 decoration: TextDecoration.underline,
-                                color: Colors.blue,
+                                color: Colors.amber,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -216,7 +230,7 @@ class _LogInState extends State<LogIn> {
               const SizedBox(
                 height: 1,
               ),
-              GoogleSignInButton()
+             // GoogleSignInButton()
             ],
           )),
     );
