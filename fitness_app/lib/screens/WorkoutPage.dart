@@ -159,6 +159,26 @@ Future<void> deleteExercise(String workoutId, Map<String, dynamic> exercise) asy
   await workoutRef.update({
     'exercises': FieldValue.arrayRemove([exercise])
   });
+
+  // Update the leaderboard collection
+  await _decrementLeaderboard(exercise['category'], exercise['name']);
+
+}
+
+Future<void> _decrementLeaderboard(String category, String exerciseName) async {
+  // Get the reference to the leaderboard collection
+  final leaderboardRef = FirebaseFirestore.instance.collection('leaderboard');
+
+  // Get the document corresponding to the exercise category
+  final categoryDoc = await leaderboardRef.doc(category).get();
+
+  if (categoryDoc.exists) {
+    // If the document exists, decrement the exercise count by 1
+    await leaderboardRef.doc(category).update({
+      exerciseName: FieldValue.increment(-1),
+    });
+  }
+  // If the document doesn't exist, do nothing as the count should not go below 0
 }
 
 Future<void> _showUpdateExerciseDialog(BuildContext context, String workoutId, Map<String, dynamic> exercise) async {

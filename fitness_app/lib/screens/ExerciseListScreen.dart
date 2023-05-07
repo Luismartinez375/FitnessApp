@@ -353,7 +353,28 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
         'timestamp': FieldValue.serverTimestamp(),
       });
     }
+await _updateLeaderboard(category, exerciseName);
   }
+
+  Future<void> _updateLeaderboard(String category, String exerciseName) async {
+  // Get the reference to the leaderboard collection
+  final leaderboardRef = FirebaseFirestore.instance.collection('leaderboard');
+
+  // Get the document corresponding to the exercise category
+  final categoryDoc = await leaderboardRef.doc(category).get();
+
+  if (categoryDoc.exists) {
+    // If the document exists, update the exercise count by 1
+    await leaderboardRef.doc(category).update({
+      exerciseName: FieldValue.increment(1),
+    });
+  } else {
+    // If the document doesn't exist, create a new document with the exercise count set to 1
+    await leaderboardRef.doc(category).set({
+      exerciseName: 1,
+    });
+  }
+}
 
   Widget _buildCategoryGrid() {
     return GridView.builder(

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 class DailyWorkout extends StatefulWidget {
+  static const String routeName = '/dailyworkout'; // routename for navigator
   const DailyWorkout({Key? key}) : super(key: key);
 
   @override
