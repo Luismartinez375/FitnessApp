@@ -12,6 +12,7 @@ import 'loginScreen.dart';
 import 'registerScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 
 class Landing extends StatefulWidget {
   static const String routeName = '/landing'; // routename for navigator
@@ -81,16 +82,24 @@ class _LandingState extends State<Landing> {
         ],
       ),
       body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
+      bottomNavigationBar: AnimatedBottomNavigationBar(
+        activeColor: Colors.amber,
+        backgroundColor: Colors.black,
+        inactiveColor: Colors.grey,
+        gapLocation: GapLocation.none,
+        notchSmoothness: NotchSmoothness.defaultEdge,
         onTap: _onTabTapped,
-        
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.fitness_center), label: 'Workout'),
-          BottomNavigationBarItem(icon: Icon(Icons.leaderboard), label: 'Leaderboard'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        icons: [
+          Icons.home,
+          Icons.fitness_center,
+          Icons.leaderboard,
+          Icons.person,
         ],
+        activeIndex: _currentIndex,
+        leftCornerRadius: 0,
+        rightCornerRadius: 0,
+        splashColor: Colors.amber.withOpacity(0.5),
+        elevation: 8.0,
       ),
     );
   }
