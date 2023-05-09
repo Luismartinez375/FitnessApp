@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:timezone/timezone.dart' as tz;
 import '../widgets/AnimatedProgressBar.dart';
 import '../widgets/notifications_manager.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -239,10 +240,13 @@ void _updateSelectedTimes(Map<String, dynamic> userData) {
 
         
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-        actions: [
+   return Scaffold(
+    appBar: AppBar(
+      title: Text(
+        'Profile',
+        style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w600),
+      ),
+      actions: [
           IconButton(
   icon: Icon(Icons.calendar_today),
   onPressed: () {
@@ -338,17 +342,17 @@ void _updateSelectedTimes(Map<String, dynamic> userData) {
           double bmi = calculateBMI(weightInPounds, totalHeightInInches);
 
           return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             GestureDetector(
                               onTap: () => _showAvatarDialog(context, userData),
@@ -371,55 +375,69 @@ void _updateSelectedTimes(Map<String, dynamic> userData) {
                         ),
                       ),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              textAlign: TextAlign.end,
-                              '${userData['Name']} ${userData['lastName']}',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            '${userData['Name']} ${userData['lastName']}',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              smallCard('Age', '$age'),
+                              SizedBox(width: 16),
+                              smallCard('Height', height,
+                                  onTap: () => _updateHeight(
+                                      context,
+                                      userData['heightft'],
+                                      userData['heightinch'])),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              smallCard('Gender', '${userData['gender']}'),
+                              SizedBox(width: 16),
+                              InkWell(
+                                onTap: () => _updateValue(
+                                    context, 'Weight', userData['weight']),
+                                child: smallCard(
+                                    'Weight', '${userData['weight']}'),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              _editProfile(context, userData);
+                            },
+                            child: Text('Edit'),
+                            style: ElevatedButton.styleFrom(
+                              primary: Color(0xFF263238),
+                              onPrimary: Colors.white,
+                              textStyle: GoogleFonts.poppins(
+                                  fontSize: 16, fontWeight: FontWeight.w600),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 40.0, vertical: 12.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
                               ),
                             ),
-                            SizedBox(height: 8),
-                            smallCard('Age', '$age'),
-                            smallCard('Height', height,
-                                onTap: () => _updateHeight(
-                                    context,
-                                    userData['heightft'],
-                                    userData['heightinch'])),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                                height: 18), // Add spacing to align the content
-                            smallCard('Gender', '${userData['gender']}'),
-                            InkWell(
-                              onTap: () => _updateValue(
-                                  context, 'Weight', userData['weight']),
-                              child:
-                                  smallCard('Weight', '${userData['weight']}'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _editProfile(context, userData);
-                      },
-                      child: Text('Edit'),
                     ),
-                  ),
-                  SizedBox(height: 16),
+                    // ...
+                  ],
+                ),
+                SizedBox(height: 24),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
