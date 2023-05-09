@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_app/screens/landingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../screens/loginScreen.dart';
 import '../widgets/snackBar.dart';
 import '../models/User.dart';
 import '../models/workout.dart';
@@ -58,24 +59,35 @@ Future<void> signUpWithEmail({
   await _auth.signOut();
 }
 
-  //Email login
-Future<void> loginWithEmail({
-  required String email,
-  required String password,
-  required BuildContext context,
-}) async {
-  try {
-    await _auth.signInWithEmailAndPassword(email: email, password: password);
+  Future<void> logout() async {
+    //logout
+    await _auth.signOut();
+  }
 
-    if (!_auth.currentUser!.emailVerified) {
-      await sendEmailVerification(context);
-    } else {
-      // Use Navigator.pushNamedAndRemoveUntil to navigate to the landing page and empty the navigator stack
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        Landing.routeName,
-        (Route<dynamic> route) => false, // This condition will remove all previous routes from the stack
-      );
+  //Email login
+
+  Future<void> loginWithEmail({
+    required String email,
+    required String password,
+    required BuildContext context,
+  }) async {
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+      if (!_auth.currentUser!.emailVerified) {
+        await sendEmailVerification(context);
+      } else {
+        // Use Navigator.pushNamedAndRemoveUntil to navigate to the landing page and empty the navigator stack
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Landing.routeName,
+          (Route<dynamic> route) =>
+              false, // This condition will remove all previous routes from the stack
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      showSnackBar(context, e.message!);
+
     }
   } on FirebaseAuthException catch (e) {
     showSnackBar(context, e.message!);
@@ -104,6 +116,20 @@ Future<void> loginWithEmail({
             ///if user signs in through google
             ///and is new user
             ///functions to do stuff witht that new user such as add info to firestore database
+            final cUser = curUser(
+                name: userCredential.user?.displayName,
+                email: userCredential.user?.email,
+                lastName: '',
+                userName: userCredential.user?.displayName,
+                workoutIDs: []);
+            final docRef = db
+                .collection('users')
+                .withConverter(
+                  fromFirestore: curUser.fromFirestore,
+                  toFirestore: (curUser user, options) => user.toFirestore(),
+                )
+                .doc(_auth.currentUser?.uid.toString());
+            await docRef.set(cUser);
           }
         }
       }
@@ -152,20 +178,19 @@ Future<void> loginWithEmail({
 }
 
 class Database {
-  String? workoutID;
-
   final db = FirebaseFirestore.instance;
 
   Future<void> addWorkoutPlan({
     required String split,
     required String day,
     required List<String?>? workoutIDs,
+    required DateTime? workoutDate,
   }) async {
     final curPlan = WorkoutPlan(
-      split: split,
-      day: day,
-      workoutIDs: workoutIDs,
-    );
+        split: split,
+        day: day,
+        workoutIDs: workoutIDs,
+        workoutDate: workoutDate);
     final docRef = db
         .collection('workouts')
         .withConverter(
@@ -175,7 +200,16 @@ class Database {
         )
         .doc();
     await docRef.set(curPlan);
-    workoutID = docRef.id.toString();
+    final data = {'curWorkout': docRef.id};
+    final addID = db
+        .collection('users')
+        .doc(user?.uid)
+        .set(data, SetOptions(merge: true));
+    await addID;
+    final addIDList = db.collection('users').doc(user?.uid);
+    addIDList.update({
+      'workout-IDs': FieldValue.arrayUnion([docRef.id.toString()])
+    });
   }
 
   Future<void> addWorkout({
@@ -203,5 +237,5 @@ class Database {
     await docRef.set(curWorkout);
   }
 
-
 }
+

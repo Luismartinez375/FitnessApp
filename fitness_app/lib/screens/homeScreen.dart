@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_app/models/User.dart';
 import 'package:fitness_app/screens/tPLanScreen.dart';
 import 'package:fitness_app/screens/tWorkoutScreen.dart';
 import '../auth/firebaseAuthMethods.dart';
@@ -8,16 +9,12 @@ import 'package:flutter/material.dart';
 import '../models/workoutPlan.dart';
 import 'package:fitness_app/widgets/listItem.dart';
 import 'package:fitness_app/widgets/workoutcard.dart';
-
-// var workoutList = [
-//   Workout("Barbell Squat", 3, 10, 225),
-//   Workout("Leg Extension", 3, 12, 140),
-//   Workout("RDL (Romanian Deadlift)", 3, 8, 135),
-//   Workout("Hack Squat", 3, 10, 215),
-// ];
+import 'package:table_calendar/table_calendar.dart';
+import '../models/events.dart';
 
 final user = FirebaseAuthMethods(FirebaseAuth.instance).firebaseUser();
-final db = Database();
+final db = FirebaseFirestore.instance;
+
 // var workoutPlan = WorkoutPlan("Monday", "Leg-Push", workoutList);
 
 bool ispressed = true;
@@ -32,131 +29,246 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   get description => null;
 
-  List<Widget> dynamicList = [];
-  Icon floatingIcon = new Icon(Icons.add);
-  int num = 0;
-  void newCard() {
-    dynamicList.add(new Padding(
-        padding: const EdgeInsets.all(5),
-        child: Container(
-          child: TextField(
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), hintText: 'Enter your workout'),
-              style: TextStyle(fontSize: 15, height: 2.0, color: Colors.black)),
-        )));
+  late final ValueNotifier<List<Event>> _selectedEvents;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
+      .toggledOff; // Can be toggled on/off by longpressing a date
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+  DateTime? _rangeStart;
+  DateTime? _rangeEnd;
+  static const List<Widget> _widgetOptions = <Widget>[
+    Text('Home'),
+    Text('Search'),
+    Text('Profile'),
+  ];
+
+  void dispose() {
+    _selectedEvents.dispose();
+    super.dispose();
   }
 
-  final CollectionReference _workouts =
-      FirebaseFirestore.instance.collection('workouts');
+  void initState() {
+    super.initState();
+    _selectedDay = _focusedDay;
+    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+  }
+
+  List<Event> _getEventsForDay(DateTime day) {
+    // Implementation example
+    return kEvents[day] ?? [];
+  }
+
+  List<Event> _getEventsForRange(DateTime start, DateTime end) {
+    // Implementation example
+    final days = daysInRange(start, end);
+
+    return [
+      for (final d in days) ..._getEventsForDay(d),
+    ];
+  }
+
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        _selectedDay = selectedDay;
+        _focusedDay = focusedDay;
+        _rangeStart = null; // Important to clean those
+        _rangeEnd = null;
+        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+      });
+
+      _selectedEvents.value = _getEventsForDay(selectedDay);
+    }
+  }
+
+  void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
+    setState(() {
+      _selectedDay = null;
+      _focusedDay = focusedDay;
+      _rangeStart = start;
+      _rangeEnd = end;
+      _rangeSelectionMode = RangeSelectionMode.toggledOn;
+    });
+
+    // `start` or `end` could be null
+    if (start != null && end != null) {
+      _selectedEvents.value = _getEventsForRange(start, end);
+    } else if (start != null) {
+      _selectedEvents.value = _getEventsForDay(start);
+    } else if (end != null) {
+      _selectedEvents.value = _getEventsForDay(end);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: ListView(
-      children: [
-        AppBar(
-          title: Text(
-            "Schedule",
-            textAlign: TextAlign.center,
-          ),
-        ),
-
-        Text(
-          ' Days                     Day Type               ',
-          style: TextStyle(
-              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
-        ),
-        // Text(
-        //   'Day Type',
-        //   textAlign: TextAlign.center,
-        // ),
-        // Text(
-        //   'Workout',
-        //   textAlign: TextAlign.end,
-        // ),
-        WorkoutCards(),
-        Text(
-          '  Workouts',
-          style: TextStyle(
-              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
-        ),
-        Exercises(),
-
-        Row(mainAxisSize: MainAxisSize.min, children: [
-          const Text(
-            ' Sets   ',
-            style: TextStyle(
-                color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.left,
-          )
-        ]),
-        Sets(),
-        Text(
-          '  Reps',
-          style: TextStyle(
-              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
-        ),
-        Reps(),
-        Text(
-          '  Weight (Pounds)',
-          style: TextStyle(
-              color: Colors.red, fontSize: 15, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
-        ),
-        Weights(),
-
-        // WorkoutCard(
-        //     exerciseName: 'exerciseName',
-        //     muscleGroup: 'muscleGroup',
-        //     description: 'description'),
-        // Expanded(child: ListView.builder(itemBuilder: (_, index){
-        //   return WorkoutCard(exerciseName: exerciseName, muscleGroup: muscleGroup, description: description);
-        // }))
-
-        Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                child: FloatingActionButton(onPressed: () {
-                  num++;
-                  setState(() {
-                    newCard();
-                  });
-                  floatingIcon;
-                }),
-              ),
-            ),
-          ],
-        ),
-        // Row(children: dynamicList),
-      ],
-    ));
+    return Scaffold();
   }
 }
 
-//         body: StreamBuilder(
-//             stream: _workouts.snapshots(),
-//             builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-//               if (streamSnapshot.hasData) {
-//                 return ListView.builder(
-//                     itemCount: streamSnapshot.data!.docs.length,
-//                     itemBuilder: (context, index) {
-//                       final DocumentSnapshot documentSnapshot =
-//                           streamSnapshot.data!.docs[index];
-//                       return Card(
-//                           margin: const EdgeInsets.all(10),
-//                           child: ListTile(
-//                             title: Text(documentSnapshot['workouts']),
-//                             subtitle: Text(documentSnapshot['reps'].toString()),
-//                           ),
-//                           );
-//                     },
-//                     );
-//               }
-//               ;
-//             }));
-//   }
-// }
+
+ // return Scaffold(
+    //   body: Column(children: [
+    //     TableCalendar(
+    //       firstDay: kFirstDay,
+    //       lastDay: kLastDay,
+    //       focusedDay: _focusedDay,
+    //       selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+    //       rangeStartDay: _rangeStart,
+    //       rangeEndDay: _rangeEnd,
+    //       calendarFormat: _calendarFormat,
+    //       rangeSelectionMode: _rangeSelectionMode,
+    //       eventLoader: _getEventsForDay,
+    //       startingDayOfWeek: StartingDayOfWeek.monday,
+    //       calendarStyle: CalendarStyle(
+    //         // Use `CalendarStyle` to customize the UI
+    //         outsideDaysVisible: false,
+    //       ),
+    //       onDaySelected: _onDaySelected,
+    //       onRangeSelected: _onRangeSelected,
+    //       onFormatChanged: (format) {
+    //         if (_calendarFormat != format) {
+    //           setState(() {
+    //             _calendarFormat = format;
+    //           });
+    //         }
+    //       },
+    //       onPageChanged: (focusedDay) {
+    //         _focusedDay = focusedDay;
+    //       },
+    //     ),
+    //     const SizedBox(
+    //       height: 8.0,
+    //     ),
+    //     Expanded(
+    //         child: ValueListenableBuilder<List<Event>>(
+    //       valueListenable: _selectedEvents,
+    //       builder: (context, value, _) {
+    //         return ListView.builder(
+    //           itemCount: value.length,
+    //           itemBuilder: (context, index) {
+    //             return Container(
+    //               margin: const EdgeInsets.symmetric(
+    //                 horizontal: 12.0,
+    //                 vertical: 4.0,
+    //               ),
+    //               decoration: BoxDecoration(
+    //                 border: Border.all(),
+    //                 borderRadius: BorderRadius.circular(12.0),
+    //               ),
+    //               child: ListTile(
+    //                 onTap: () => print('${value[index]}'),
+    //                 title: Text('${value[index]}'),
+    //               ),
+    //             );
+    //           },
+    //         );
+    //       },
+    //     )),
+
+        // parent streambuilder that gets user info
+        // StreamBuilder<DocumentSnapshot>(
+        //   stream: FirebaseFirestore.instance
+        //       .collection('users')
+        //       .doc(user?.uid)
+        //       .snapshots(),
+        //   builder:
+        //       (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        //     if (snapshot.hasError) {
+        //       return Text('Error: ${snapshot.error}');
+        //     }
+        //     if (snapshot.connectionState == ConnectionState.waiting) {
+        //       return Text('Loading...');
+        //     }
+        //     final data = snapshot.data!;
+        //     final name = data.get('Name');
+        //     final lastName = data.get('lastName');
+        //     final email = data.get('email');
+        //     final workoutids = data.get('workout-IDs');
+        //     return Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           for (var num in workoutids)
+        //             //child streambuilder that gets user workouts
+        //             StreamBuilder(
+        //                 stream: db
+        //                     .collection('workouts/${num}/exercise')
+        //                     .snapshots(),
+        //                 builder: (BuildContext context,
+        //                     AsyncSnapshot<QuerySnapshot> snapshot) {
+        //                   if (!snapshot.hasData) {
+        //                     return const Center(
+        //                       child: CircularProgressIndicator(),
+        //                     );
+        //                   }
+        //                   var docs = snapshot.data?.docs;
+        //                   return Column(
+        //                       children: docs!
+        //                           .map((doc) => Text(doc.data().toString()))
+        //                           .toList());
+        //                 }),
+        //           Text(
+        //             'First Name: $name',
+        //             style: TextStyle(
+        //                 fontSize: 20,
+        //                 fontWeight: FontWeight.bold,
+        //                 color: Colors.red),
+        //           ),
+        //           Text(
+        //             'Last Name: $lastName',
+        //             style: TextStyle(
+        //                 fontSize: 20,
+        //                 fontWeight: FontWeight.bold,
+        //                 color: Colors.red),
+        //           ),
+        //           Text(
+        //             'Email: $email',
+        //             style: TextStyle(
+        //                 fontSize: 20,
+        //                 fontWeight: FontWeight.bold,
+        //                 color: Colors.red),
+        //           ),
+        //           Text(
+        //             'Workouts: $workoutids',
+        //             style: TextStyle(
+        //                 fontSize: 20,
+        //                 fontWeight: FontWeight.bold,
+        //                 color: Colors.red),
+        //           ),
+        //         ]);
+        //   },
+        // ),
+        //streambuilder for workout days
+        // StreamBuilder(
+        //   stream: FirebaseFirestore.instance
+        //       .collection('workouts')
+        //       .where('workoutIDs', arrayContains: user?.uid)
+        //       .snapshots(),
+        //   builder:
+        //       (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        //     if (!snapshot.hasData) {
+        //       return const Center(
+        //         child: CircularProgressIndicator(),
+        //       );
+        //     }
+        //     var docs = snapshot.data?.docs;
+        //     return Column(
+        //         children:
+        //             docs!.map((doc) => Text(doc.data().toString())).toList());
+        //   },
+        // ),
+
+    //     Align(
+    //         alignment: Alignment.bottomCenter,
+    //         child: FloatingActionButton(
+    //           onPressed: () {
+    //             setState(() {
+    //               Navigator.push(context,
+    //                   MaterialPageRoute(builder: (context) => MyWidget()));
+    //             });
+    //           },
+    //           child: Icon(Icons.add),
+    //         )),
+    //   ]),
+    // );

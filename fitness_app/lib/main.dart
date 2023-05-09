@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return Provider<FirebaseAuthMethods>(
       create: (_) => FirebaseAuthMethods(FirebaseAuth.instance),
       child: MaterialApp(

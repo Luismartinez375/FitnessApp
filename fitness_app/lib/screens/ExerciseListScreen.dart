@@ -374,7 +374,6 @@ await _updateLeaderboard(category, exerciseName);
       exerciseName: 1,
     });
   }
-}
 
   Widget _buildCategoryGrid() {
     return GridView.builder(

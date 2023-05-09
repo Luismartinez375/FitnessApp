@@ -70,6 +70,9 @@ class curUser {
       gender: data?['gender'],
       
       workoutIDs: data?['workoutIDs'] is Iterable ? List.from(data?['workoutIDs']) : null,
+      workoutIDs: data?['workout-IDs'] is Iterable
+          ? List.from(data?['workout-IDs'])
+          : null,
     );
   }
 
